@@ -1,28 +1,79 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Button
+from typing import List
+
+from textual.widgets import Input, Checkbox, Select, Label
 from textual.containers import Vertical
 
-from field import TextField, IntegerField, BooleanField, ChoiceField
-from form import Form
+class TextFieldWidget(Vertical):
+    def __init__(self, field: "Field"):  # Forward reference
+        super().__init__()
+        self.field = field
+        self.input = Input(placeholder=self.field.label)
 
-class MyForm(Form):
-    name = TextField(label="Name", required=True)
-    age = IntegerField(label="Age", required=False)
-    is_active = BooleanField(label="Active")
-    choice = ChoiceField(choices = [("option1","Option 1"),("option2","Option 2")], label = "Choice")
+    def compose(self):
+        yield self.input
+        if self.field.run_validators(self.input.value):
+            yield Label("\n".join(self.field.run_validators(self.input.value)), style="red")
 
-class MyApp(App):
-    def compose(self) -> ComposeResult:
-        yield Vertical(MyForm(), Button("Submit"), id="form_container")
+    @property
+    def value(self):
+        return self.input.value
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        form = self.query_one(MyForm)
-        if form.validate():
-            data = form.get_data()
-            self.notify(f"Form data: {data}")
-        else:
-            self.notify("Form validation failed.")
+    @value.setter
+    def value(self, new_value):
+        self.input.value = new_value
 
-if __name__ == "__main__":
-    app = MyApp()
-    app.run()
+class IntegerFieldWidget(Vertical):
+    def __init__(self, field: "Field"): # Forward reference
+        super().__init__()
+        self.field = field
+        self.input = Input(placeholder=self.field.label, type="number")
+
+    def compose(self):
+        yield self.input
+
+    @property
+    def value(self):
+        return self.input.value
+
+    @value.setter
+    def value(self, new_value):
+        self.input.value = new_value
+
+class BooleanFieldWidget(Vertical):
+    def __init__(self, field: "Field"): # Forward reference
+        super().__init__()
+        self.field = field
+        self.checkbox = Checkbox(self.field.label)
+
+    def compose(self):
+        yield self.checkbox
+
+    @property
+    def value(self):
+        return self.checkbox.value
+
+    @value.setter
+    def value(self, new_value):
+        self.checkbox.value = new_value
+
+class ChoiceFieldWidget(Vertical):
+    def __init__(self, field: "Field", choices: List[tuple[str, str]]): # Forward reference
+        super().__init__()
+        self.field = field
+        self.select = Select(options=choices, prompt=self.field.label)
+
+    def field_default_value(self):
+        return Select.BLANK
+
+    def compose(self):
+        yield self.select
+
+    @property
+    def value(self):
+        return self.select.value
+
+    @value.setter
+    def value(self, new_value):
+        self.select.value = new_value
+
+
