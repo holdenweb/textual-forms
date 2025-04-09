@@ -23,8 +23,6 @@ and most valuable of all, pull requests.
 
 As of this initial release, the _form.py_ demo shows
 the (vestigial) framework's current capabilities.
-There's some LLM-generated code in there,
-but I've read all of it and nothing seems too outré.
 Even the bits that don't actually work are credible :).
 
 ### Architecture
@@ -55,6 +53,13 @@ available as an attribute of the event.
 If the form is cancelled
 a FormCancelled event is raised.
 
-### Specific Refactorings
+### Specific refactorings
 
-Although the
+This package is currently vestigial, with the barest proof-of-concept
+demonstrating a fragile ability to turn Form subclasses into
+displayable textual objects.
+The existing "framework" needs to be elaborated to improve and
+formalise the Form-Field and the Field-Widget interfaces.
+Many of the concept from the Django forms package will prove
+to be of assistance here, since it has solved many of the
+domain's problems.
