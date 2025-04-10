@@ -1,8 +1,15 @@
 from typing import Any, Callable, List, Optional
-from widget import TextFieldWidget, IntegerFieldWidget, BooleanFieldWidget, ChoiceFieldWidget
 
-class Field:
-    def __init__(self, label: str = "", required: bool = True, validators: Optional[List[Callable[[Any], List[str]]]] = None, help_text: str = ""):
+class FieldWidget(Widget):
+    def __init__(
+        self, label: str = "",
+        required: bool = True,
+        validators: Optional[List[Callable[[Any], List[str]]]] = None,
+        help_text: str = "",
+        *args,
+        **kwargs
+        ):
+        super().__init__(*args, **kwargs)
         self.label = label
         self.required = required
         self.validators = validators or []

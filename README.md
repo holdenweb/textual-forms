@@ -38,8 +38,8 @@ each of which is associated with a Widget instance,
 which may be of the Field's default type
 or passed as an argument to the Field instance.
 
-The programmer creates a Form subclass,
-and within the subclass body binds a number of Field instances
+The programmer creates a Form container,
+and within it binds a number of Field instances
 to class variables.
 When the form is rendered,
 each of the fields' widgets in turn is rendered,
