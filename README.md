@@ -20,7 +20,7 @@ As of this initial release, the _form.py_ demo shows the (vestigial)
 framework's current capabilities. Even the bits that don't actually work are
 credible.
 
-![Screenshot of forms.py in action](images/screenshot.png "forms.py demo")
+![Screenshot of forms.py in action](images/screenshot.gif "forms.py demo")
 
 ### Architecture
 
@@ -32,8 +32,9 @@ The Form class is the basis of forms development; Forms contain one or more
 Fields, each of which is associated with a Widget instance, which may be of
 the Field's default type or passed as an argument to the Field instance.
 
-When a form is created it optionally takes a `data` and a `files` dict,
-either or both of which may initially be empty.
+When a form is created it optionally takes a `data` and a `files` mapping,
+either or both of which may initially be empty. The fields whose names
+appear as keys in the mapping are populated with the associated value.
 
 Field values are validated whenever their widgets lose focus (i.e. a Blur event is
 raised). Each field has an `_errors` private attribute that is initially set
@@ -44,8 +45,9 @@ has already been validated), and if the \_errors list is then non-empty
 each validation message is displayed underneath the field.
 
 The programmer creates a Form subclass, and within it binds a number of
-Field instances to class variables. When the form is rendered, each of the
-fields' widgets in turn is rendered, followed by one or more buttons in a row
+Field instances to class variables. The form's render method returns a
+Vertical in which each of the fields' widgets in turn is rendered,
+followed by one or more buttons in a row
 (usually Cancel and Submit, but there should be an API to allow
 modifications).
 

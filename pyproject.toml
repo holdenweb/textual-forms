@@ -2,21 +2,16 @@
 name = "textual-forms"
 version = "0.1.0"
 description = "Forms handling for textual"
-authors = [
-    {name = "Steve Holden",email = "steve@holdenweb.com"}
-]
-license = {text = "MIT"}
-readme = "README.md"
+authors = [{ name = "Steve Holden", email = "steve@holdenweb.com" }]
 requires-python = ">=3.12,<4.0.0"
-dependencies = [
-    "textual (>=2.1.2,<3.0.0)"
-]
-
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = ["textual (>=2.1.2,<3.0.0)"]
+packages = [{ from = "src", include = "textual_forms" }]
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
-[tool.poetry.group.dev.dependencies]
-textual-dev = "^1.7.0"
-
+[dependency-groups]
+dev = ["textual-dev>=1.7.0,<2"]

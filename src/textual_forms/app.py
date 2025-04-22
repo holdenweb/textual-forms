@@ -1,5 +1,3 @@
-import wingdbstub
-
 from form import Form
 from field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
