@@ -1,8 +1,7 @@
-from form import Form
-from field import IntegerField, TextField, ChoiceField, BooleanField
+from .form import Form
+from .field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.widgets import Button
-from textual.containers import Vertical
 
 # Validator functions
 
@@ -64,6 +63,9 @@ class MyApp(App):
         else:
             self.notify("Form validation failed.")
 
-if __name__ == "__main__":
+def main():
     app = MyApp()
     app.run()
+
+if __name__ == "__main__":
+    main()

@@ -1,17 +1,43 @@
 [project]
-name = "textual-forms"
-version = "0.1.0"
-description = "Forms handling for textual"
-authors = [{ name = "Steve Holden", email = "steve@holdenweb.com" }]
-requires-python = ">=3.12,<4.0.0"
-readme = "README.md"
-license = { text = "MIT" }
-dependencies = ["textual (>=2.1.2,<3.0.0)"]
-packages = [{ from = "src", include = "textual_forms" }]
+name = "textual-forms" # The name of your package
+version = "0.2.1" # The version of your package
+description = "A prototype forms package for textual" # A brief description
+readme = "README.md" # Path to your readme file (create a basic one)
+authors = [
+  { name = "Steve Holdene", email = "steve@holdenweb.com" } # Replace with your details
+]
+requires-python = ">=3.9" # Minimum Python version required
+dependencies = [
+    "textual>=3.1.1",
+]
+
+[project.scripts]
+forms-app = "textual_forms.app:main"
+
+[dependency-groups]
+dev = [
+    "pytest~=7.0",
+    "pytest-cov~=3.0",
+    "watchdog>=2.1.7,<3",
+    "coverage>=6.4.1,<7",
+    "setuptools>=75.6.0,<76",
+    "ruff>=0.8.4,<0.9",
+    "black>=24.10.0,<25",
+]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/textual_forms"]
+
+[tool.hatch.build.targets.sdist.sources]
+"src/textual_forms" = "textual_forms"
+
+#[tool.hatch.build.targets.wheel]
+#only-include = [ "src/textual_forms", ]
+
+[tool.hatch.build.targets.wheel.sources]
+"src/textual_forms" = "textual_forms"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[dependency-groups]
-dev = ["textual-dev>=1.7.0,<2"]
