@@ -1,9 +1,3 @@
-import sys
-for p in sys.path:
-    print(p)
-
-
-import wingdbstub
 from textual_forms.app import MyApp
 import pytest
 
@@ -11,5 +5,7 @@ import pytest
 def app():
     yield MyApp()
 
-def test_app_creation(app):
-    app.run_test()
+@pytest.mark.asyncio
+async def test_app_creation(app):
+    async with app.run_test() as pilot:
+        pilot.press("ctrl+q")  # Terminate app

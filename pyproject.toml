@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.9"
 
 dependencies = [
+    "pytest-asyncio>=0.23.8",
     "textual>=3.1.1",
 ]
 
@@ -24,6 +25,7 @@ dev = [
     "setuptools>=75.6.0,<76",
     "ruff>=0.8.4,<0.9",
     "black>=24.10.0,<25",
+    "textual-dev>=1.7.0",
 ]
 
 [tool.hatch.build.targets.sdist]
