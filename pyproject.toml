@@ -18,13 +18,9 @@ forms-app = "textual_forms.app:main"
 
 [dependency-groups]
 dev = [
-    "pytest~=7.0",
-    "pytest-cov~=3.0",
-    "watchdog>=2.1.7,<3",
-    "coverage>=6.4.1,<7",
-    "setuptools>=75.6.0,<76",
-    "ruff>=0.8.4,<0.9",
-    "black>=24.10.0,<25",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "ruff>=0.11.7",
     "textual-dev>=1.7.0",
 ]
 

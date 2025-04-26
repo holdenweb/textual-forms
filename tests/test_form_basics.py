@@ -1,6 +1,5 @@
 from textual_forms.app import MyApp
 import pytest
-
 @pytest.fixture(scope='function')
 def app():
     yield MyApp()
@@ -8,4 +7,4 @@ def app():
 @pytest.mark.asyncio
 async def test_app_creation(app):
     async with app.run_test() as pilot:
-        pilot.press("ctrl+q")  # Terminate app
+        await pilot.press("ctrl+q")  # Terminate app

@@ -25,11 +25,17 @@ should display a screen that looks something like this.
 
 ![Screenshot of forms.py in action](images/screenshot.gif "forms.py demo")
 
+### Testing
+
+A Makefile with two targets exists. `make test` runs pytest, reporting each
+test on its own line. `make coverage` runs pytest and reports on current test
+suite coverage.
+
 ### Architecture
 
-Note that by no means all aspects of the architecture are yet implemented, and there
-is rather more to do than described here to turn this into something that
-people will want to use. Hence the need for help.
+Note that by no means all aspects of the architecture are yet implemented,
+and there is rather more to do than described here to turn this into
+something that people will want to use. Hence the need for help.
 
 The Form class is the basis of forms development; Forms contain one or more
 Fields, each of which is associated with a Widget instance, which may be of
