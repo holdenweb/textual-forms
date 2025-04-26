@@ -1,12 +1,13 @@
 [project]
-name = "textual-forms" # The name of your package
-version = "0.2.1" # The version of your package
-description = "A prototype forms package for textual" # A brief description
-readme = "README.md" # Path to your readme file (create a basic one)
+name = "textual-forms"
+version = "0.2.1"
+description = "A prototype forms package for textual"
+readme = "README.md"
 authors = [
-  { name = "Steve Holdene", email = "steve@holdenweb.com" } # Replace with your details
+  { name = "Steve Holdene", email = "steve@holdenweb.com" }
 ]
-requires-python = ">=3.9" # Minimum Python version required
+requires-python = ">=3.9"
+
 dependencies = [
     "textual>=3.1.1",
 ]

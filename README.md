@@ -16,9 +16,12 @@ and so my hope is that it will inspire the textual community to help with
 discussions on Discord, suggestions, issues and most valuable of all, pull
 requests.
 
-As of this initial release, the _form.py_ demo shows the (vestigial)
-framework's current capabilities. Even the bits that don't actually work are
-credible.
+As of this 0.2.2 release, control of development uses the _uv_ utility,
+which among other things makes running the demo much simpler. The command
+
+    uvx --from git+https://github.com/holdenweb/textual-forms.git forms-app
+
+should display a screen that looks something like this.
 
 ![Screenshot of forms.py in action](images/screenshot.gif "forms.py demo")
 
