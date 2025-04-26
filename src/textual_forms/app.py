@@ -44,11 +44,11 @@ def validate_max_value(max_value: int):
 
 class MyForm(Form):
 
-    name = TextField(label="Name", required=True)
+    name = TextField(label="Name", required=True, id="form-name")
     age = IntegerField(label="Age", required=False,
-        validators=[validate_even_number, validate_max_value(99)])
-    is_active = BooleanField(label="Active")
-    choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection")
+        validators=[validate_even_number, validate_max_value(99)], id="form-age")
+    is_active = BooleanField(label="Active", id="form-isactive")
+    choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection", id='form-choice')
 
 class MyApp(App):
     def compose(self) -> ComposeResult:

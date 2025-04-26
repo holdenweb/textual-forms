@@ -4,10 +4,10 @@ from textual.widgets import Input, Checkbox, Select, Label
 from textual.containers import Vertical
 
 class TextFieldWidget(Vertical):
-    def __init__(self, field: "Field"):  # Forward reference
-        super().__init__()
+    def __init__(self, field: "Field", **kwargs):  # Forward reference
+        super().__init__(**kwargs)
         self.field = field
-        self.input = Input(placeholder=self.field.label)
+        self.input = Input(placeholder=self.field.label, **kwargs)
 
     def compose(self):
         yield self.input
@@ -23,10 +23,10 @@ class TextFieldWidget(Vertical):
         self.input.value = new_value
 
 class IntegerFieldWidget(Vertical):
-    def __init__(self, field: "Field"): # Forward reference
+    def __init__(self, field: "Field",  **kwargs): # Forward reference
         super().__init__()
         self.field = field
-        self.input = Input(placeholder=self.field.label, type="number")
+        self.input = Input(placeholder=self.field.label, type="number", **kwargs)
 
     def compose(self):
         yield self.input
@@ -40,8 +40,8 @@ class IntegerFieldWidget(Vertical):
         self.input.value = new_value
 
 class BooleanFieldWidget(Vertical):
-    def __init__(self, field: "Field"): # Forward reference
-        super().__init__()
+    def __init__(self, field: "Field", **kwargs): # Forward reference
+        super().__init__(**kwargs)
         self.field = field
         self.checkbox = Checkbox(self.field.label)
 
@@ -57,8 +57,8 @@ class BooleanFieldWidget(Vertical):
         self.checkbox.value = new_value
 
 class ChoiceFieldWidget(Vertical):
-    def __init__(self, field: "Field", choices: List[tuple[str, str]]): # Forward reference
-        super().__init__()
+    def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
+        super().__init__(**kwargs)
         self.field = field
         self.select = Select(options=choices, prompt=self.field.label)
 
