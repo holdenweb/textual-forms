@@ -10,6 +10,7 @@ class Field:
         required: bool = True,
         validators: Optional[List[Callable[[Any], List[str]]]] = None,
         help_text: str = "",
+        disabled=False,
         **kwargs,
     ):
         self.kwargs = kwargs
@@ -19,10 +20,12 @@ class Field:
         self.help_text = help_text
         self.name: str = ""
         self.form: Optional["Form"] = None  # Forward reference
+        self.disabled = disabled
         self.widget = self.create_widget()
-        self.value: Any = self.field_default_value()
-    def field_default_value(self) -> str:
-        return ""
+        #self.value: Any = self.field_default_value()
+
+    def field_default_value(self) -> None:
+        raise TypeError("Field subclasses should implement the field_default_value method")
 
     def run_validators(self, value: Any) -> List[str]:
         errors: List[str] = []
@@ -30,9 +33,9 @@ class Field:
             errors.append(f"{self.label} is required.")
         if self.validators:
             for validator in self.validators:
-                result = validator(value)
+                result = validator.validate(value)
                 if result:
-                    errors.extend(result)
+                    errors.append(result)
         return errors
 
     @property
@@ -41,7 +44,7 @@ class Field:
 
     @value.setter
     def value(self, value):
-        self.widget.value = value
+        self.widget.value = str(value)
 
     def to_python(self, value: Any) -> Any:
         return value
@@ -52,9 +55,14 @@ class Field:
     def create_widget(self):
         raise NotImplementedError("Subclasses must implement create_widget()")
 
+
 class TextField(Field):
     def create_widget(self):
         return TextFieldWidget(field = self, **self.kwargs)
+
+    def field_default_value(self):
+        return ""
+
 
 class IntegerField(Field):
     def create_widget(self):
@@ -66,12 +74,19 @@ class IntegerField(Field):
         except ValueError:
             return None
 
+    def field_default_value(self):
+        return 42
+
+
 class BooleanField(Field):
     def create_widget(self):
         return BooleanFieldWidget(field = self, **self.kwargs)
 
     def to_python(self, value: bool) -> bool:
         return value
+
+    def field_default_value(self):
+        return False
 
 class ChoiceField(Field):
 
@@ -86,13 +101,18 @@ class ChoiceField(Field):
     ):
         self.choices = choices
         self.kwargs = kwargs
-        super().__init__(label, required, validators, help_text)
+        super().__init__(label, required, validators, help_text, **kwargs)
+        self.widget = self.create_widget()
 
     def field_default_value(self):
-        return self.widget.field_default_value(**self.kwargs)
+        return None
 
     def create_widget(self):
         return ChoiceFieldWidget(field=self, choices=self.choices, **self.kwargs)
 
     def to_python(self, value: str) -> str:
         return value
+
+    def field_default_value(self):
+        return 42
+

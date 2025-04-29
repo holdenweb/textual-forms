@@ -1,66 +1,50 @@
+import wingdbstub
+
 from .form import Form
 from .field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.widgets import Button
-
+from textual.validation import Integer, Number, Validator, ValidationResult
 # Validator functions
 
 from typing import Any, List
 
-def validate_even_number(value: Any) -> List[str]:
-    """
-    Validates that the input is an even number.
 
-    Args:
-        value: The value to validate.
-
-    Returns:
-        A list of error messages. If the list is empty, the validation succeeded.
-    """
-    errors: List[str] = []
-    if value is not None:
-        if isinstance(value, int):
-            if value % 2 != 0:
-                errors.append("Value must be an even number.")
+class EvenInteger(Validator):
+    def validate(self, value: str) -> ValidationResult:
+        try:
+            value = int(value)
+        except ValueError:
+            return self.failure("Not an integer")
+        if value % 2:
+            return self.failure("Odd number")
         else:
-            errors.append("Value must be an integer.") # Or perhaps, "Invalid input type"
-    return errors
+            return self.success()
 
-def validate_max_value(max_value: int):
-    """
-    Returns a validator that checks if the input does not exceed max_value.
-    """
-    def validator(value: Any) -> List[str]:
-        errors: List[str] = []
-        if value is not None:
-            if isinstance(value, int):
-                if value > max_value:
-                    errors.append(f"Value cannot exceed {max_value}.")
-            else:
-                errors.append("Value must be an integer.")
-        return errors
-
-    return validator
 
 class MyForm(Form):
 
     name = TextField(label="Name", required=True, id="form-name")
     age = IntegerField(label="Age", required=False,
-        validators=[validate_even_number, validate_max_value(99)], id="form-age")
+        validators=[Number(minimum=0, maximum=130), EvenInteger()], id="form-age")
     is_active = BooleanField(label="Active", id="form-isactive")
     choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection", id='form-choice')
 
 class MyApp(App):
     def compose(self) -> ComposeResult:
-        yield MyForm(id="form_container").render()
+        yield MyForm().build_form(id="form-container")
         yield Button("Submit")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
-        form = self.query_one("#form_container")
+        self.app.log(self.app.tree)
+        form = self.app.query_one("#form-container")
         if form.validate():
             data = form.get_data()
             self.notify(f"Form data: {data}")
         else:
+            # LOGIC BELOW ACCESSES ERROR MESSAGES BY FIELD NAME
+            #for vr in errors['age']:
+                #for fd in vr.failure_descriptions: print(fd)
             self.notify("Form validation failed.")
 
 def main():
