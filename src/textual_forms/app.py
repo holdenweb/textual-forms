@@ -4,10 +4,8 @@ from .form import Form
 from .field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.widgets import Button
-from textual.validation import Integer, Number, Validator, ValidationResult
+from textual.validation import Number, Validator, ValidationResult
 # Validator functions
-
-from typing import Any, List
 
 
 class EvenInteger(Validator):
@@ -31,8 +29,13 @@ class MyForm(Form):
     choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection", id='form-choice')
 
 class MyApp(App):
+
+    def __init__(self, *args, **kwargs):
+        self.app_form = MyForm()  # simplify access for testing and debugging
+        super().__init__(*args, **kwargs)
+
     def compose(self) -> ComposeResult:
-        yield MyForm().build_form(id="form-container")
+        yield self.app_form.render_form(id="form-container")
         yield Button("Submit")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:

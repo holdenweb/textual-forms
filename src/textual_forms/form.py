@@ -103,7 +103,7 @@ class BaseForm:
         fields.update(self.fields)  # add remaining fields in original order
         self.fields = fields
 
-    def build_form(self, id):
+    def render_form(self, id):
         """
         Return a Vertical subclass with all the widgets inside it. The
         widgets are extracted from each field in turn and rendered inside the
@@ -130,6 +130,7 @@ class RenderedForm(Vertical):
     def __init__(self, form, id=None):
         super().__init__(*form.children, id=id, **form.kwargs)
         self.form = form
+        self.fields = form.fields
 
     async def on_mount(self) -> None:
         for field in self.form.fields.values():

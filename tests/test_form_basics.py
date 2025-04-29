@@ -38,3 +38,7 @@ async def test_integer_field(app):
         assert age_widget.field.to_python(v) == 120
 
 
+@pytest.mark.asyncio
+async def test_rendered_form(app):
+    async with app.run_test() as pilot:
+        assert list(app.app_form.rform.fields) == ["name", "age", "is_active", "choice"]
