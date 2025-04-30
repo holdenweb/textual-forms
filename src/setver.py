@@ -140,7 +140,6 @@ def update_project_version(toml_file_path: str, new_version_str: str) -> None:
     # 1. Validate the new version string format using semver
     try:
         new_version = semver.Version.parse(new_version_str)
-        #print(f"New version '{new_version_str}' is valid semver.")
     except ValueError:
         # Raise specific custom exception
         raise VersionValidationError(
@@ -164,15 +163,10 @@ def update_project_version(toml_file_path: str, new_version_str: str) -> None:
             f"New version '{new_version_str}' ({new_version}) is not strictly greater "
             f"than the existing version '{existing_version_str}' ({existing_version})."
         )
-    else:
-        print(f"Validation success: New version {new_version} > Existing version {existing_version}.")
 
     # 5. Write the new version (delegate error handling to write_version)
     # Exceptions from write_version will propagate up
     write_version(toml_file_path, new_version_str)
-    print(f"Successfully updated '{toml_file_path}' to version '{new_version_str}'.")
-    print(f"--- Version update complete for: {toml_file_path} ---")
-
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
