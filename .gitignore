@@ -125,3 +125,7 @@ dmypy.json
 
 # WingPro project files
 *.wp?
+wingdbstub.py
+
+# Mac OS thumbnails
+.DS_Store
