@@ -150,12 +150,10 @@ def update_project_version(toml_file_path: str, new_version_str: str) -> None:
     # 2. Read existing version (delegate error handling to read_version)
     # Exceptions from read_version (FileNotFound, TomlProcessingError, IOError) will propagate up
     existing_version_str = read_version(toml_file_path)
-    #(f"Found existing version: {existing_version_str}")
 
     # 3. Validate the existing version string format
     try:
         existing_version = semver.Version.parse(existing_version_str)
-        #print(f"Existing version '{existing_version_str}' is valid semver.")
     except ValueError:
         raise VersionValidationError(
             f"Existing version '{existing_version_str}' in '{toml_file_path}' is not a valid semantic version."
