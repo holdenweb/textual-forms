@@ -1,44 +1,29 @@
 [project]
 name = "textual-forms"
-version = "0.2.1"
+version = "0.2.2"
 description = "A prototype forms package for textual"
 readme = "README.md"
-authors = [
-  { name = "Steve Holdene", email = "steve@holdenweb.com" }
-]
 requires-python = ">=3.9"
+dependencies = [ "pytest-asyncio>=0.23.8", "textual>=3.1.1",]
+[[project.authors]]
+name = "Steve Holdene"
+email = "steve@holdenweb.com"
 
-dependencies = [
-    "pytest-asyncio>=0.23.8",
-    "textual>=3.1.1",
-]
+[dependency-groups]
+dev = [ "pytest>=8.3.5", "pytest-cov>=6.1.1", "ruff>=0.11.7", "semver>=3.0.4", "textual-dev>=1.7.0", "toml>=0.10.2",]
+
+[build-system]
+requires = [ "hatchling",]
+build-backend = "hatchling.build"
 
 [project.scripts]
 forms-app = "textual_forms.app:main"
 
-[dependency-groups]
-dev = [
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.1",
-    "ruff>=0.11.7",
-    "semver>=3.0.4",
-    "textual-dev>=1.7.0",
-    "toml>=0.10.2",
-]
-
 [tool.hatch.build.targets.sdist]
-only-include = ["src/textual_forms"]
+only-include = [ "src/textual_forms",]
 
 [tool.hatch.build.targets.sdist.sources]
 "src/textual_forms" = "textual_forms"
 
-#[tool.hatch.build.targets.wheel]
-#only-include = [ "src/textual_forms", ]
-
 [tool.hatch.build.targets.wheel.sources]
 "src/textual_forms" = "textual_forms"
-
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-

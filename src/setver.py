@@ -1,6 +1,7 @@
 import toml
 import semver
 import os
+import sys
 from typing import Dict, Any
 
 # --- Custom Exception Classes ---
@@ -103,7 +104,6 @@ def write_version(toml_file_path: str, new_version_str: str) -> None:
              f"Failed to decode TOML file '{toml_file_path}' before writing. Invalid syntax. Details: {e}"
             ) from e
     except (IOError, KeyError, TypeError) as e: # Catch read-related errors
-        # Re-raise IOErrors directly, wrap others for context
         if isinstance(e, IOError):
             raise IOError(f"Could not read file '{toml_file_path}' before writing. Details: {e}") from e
         else:
@@ -176,3 +176,10 @@ def update_project_version(toml_file_path: str, new_version_str: str) -> None:
     print(f"--- Version update complete for: {toml_file_path} ---")
 
 
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+        print(read_version('pyproject.toml'))
+    elif len(sys.argv) == 2:
+        update_project_version('pyproject.toml', sys.argv[1])
+    else:
+        sys.exit("Aborted: additional arguments detected")
