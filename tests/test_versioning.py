@@ -37,22 +37,12 @@ def temp_toml():
 
 def attempt_update(filename, version, exception):
     with pytest.raises(exception):
-        update_project_version(filename, version)
-
-def version_format_invalid(testfile):
-    with pytest.raises(expected_exception):
-        pass
-
-def missing_version(testfile2):
-    pass
-
-def missing_toml_file():
-    pass
+        update_project_version(filename, version if version else "2.3.4")
 
 @pytest.mark.parametrize("version,exception", [
     ('0.9.0', VersionValidationError),
     ('not-a-vsn', VersionValidationError),
-
+    (None, TomlProcessingError)
 ])
 def test_exceptions(version, exception):
     with temp_toml() as f:
@@ -62,3 +52,7 @@ def test_exceptions(version, exception):
 
 def test_no_file():
     attempt_update("no_such_file", "9.9.9", IOError)
+
+def test_version_present():
+    import textual_forms
+    assert hasattr(textual_forms, '__version__')
