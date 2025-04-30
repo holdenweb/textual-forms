@@ -54,7 +54,7 @@ def missing_toml_file():
     ('invalid-version', VersionValidationError),
 
 ])
-def test_successful_update(version, exception):
+def test_exception_raising(version, exception):
     with temp_toml() as f:
         f.write(content(version))
         f.close()
