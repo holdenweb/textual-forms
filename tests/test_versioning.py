@@ -35,9 +35,9 @@ def temp_toml():
         delete_on_close=False,
     )
 
-def attempt_update(f, version, exception):
+def attempt_update(filename, version, exception):
     with pytest.raises(exception):
-        update_project_version(f.name, version)
+        update_project_version(filename, version)
 
 def version_format_invalid(testfile):
     with pytest.raises(expected_exception):
@@ -51,11 +51,14 @@ def missing_toml_file():
 
 @pytest.mark.parametrize("version,exception", [
     ('0.9.0', VersionValidationError),
-    ('invalid-version', VersionValidationError),
+    ('not-a-vsn', VersionValidationError),
 
 ])
-def test_exception_raising(version, exception):
+def test_exceptions(version, exception):
     with temp_toml() as f:
         f.write(content(version))
         f.close()
-        attempt_update(f, version, exception)
+        attempt_update(f.name, version, exception)
+
+def test_no_file():
+    attempt_update("no_such_file", "9.9.9", IOError)
