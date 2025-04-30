@@ -19,10 +19,10 @@ def release(version):
 
     # Check in an updated version.py
     pystring = VERSION_TEMPLATE.format(version=version)
-    with open("version.py", "w") as pyfile:
+    with open("src/textual_forms/version.py", "w") as pyfile:
         pyfile.write(pystring)
         print("Wrote", pyfile)
-    cmd = ["git", "add", "uv.lock", "pyproject.toml"]  # Note: excludes files previously added
+    cmd = ["git", "add", "uv.lock", "pyproject.toml", "src/textual_forms/version.py"]  # Note: excludes files previously added
     retcode = subprocess.call(cmd)
     cmd = ["git", "commit", "-m", f"Release r{version}"]
     retcode = subprocess.call(cmd)
