@@ -1,7 +1,7 @@
 import wingdbstub
 
-from .form import Form
-from .field import IntegerField, TextField, ChoiceField, BooleanField
+from textual_forms.form import Form
+from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.widgets import Button
 from textual.validation import Number, Validator, ValidationResult
@@ -13,9 +13,9 @@ class EvenInteger(Validator):
         try:
             value = int(value)
         except ValueError:
-            return self.failure("Not an integer")
+            return self.success()  # Handled by other validators
         if value % 2:
-            return self.failure("Odd number")
+            return self.failure("Odd number - yuck!")
         else:
             return self.success()
 
@@ -30,6 +30,7 @@ class MyForm(Form):
 
 class MyApp(App):
 
+    CSS_PATH = "app.tcss"
     def __init__(self, *args, **kwargs):
         self.app_form = MyForm()  # simplify access for testing and debugging
         super().__init__(*args, **kwargs)
@@ -41,14 +42,12 @@ class MyApp(App):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         self.app.log(self.app.tree)
         form = self.app.query_one("#form-container")
-        if form.validate():
-            data = form.get_data()
-            self.notify(f"Form data: {data}")
-        else:
-            # LOGIC BELOW ACCESSES ERROR MESSAGES BY FIELD NAME
-            #for vr in errors['age']:
-                #for fd in vr.failure_descriptions: print(fd)
-            self.notify("Form validation failed.")
+        #if form.validate():
+        data = form.get_data()
+        self.notify(f"Form data: {data}")
+
+    def on_click(self, e):
+        self.log(self.tree)
 
 def main():
     app = MyApp()

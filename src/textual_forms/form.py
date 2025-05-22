@@ -5,7 +5,9 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual.containers import Vertical
+from textual.widgets import Static
 from textual.message_pump import _MessagePumpMeta
+
 
 class FormMetaclass(_MessagePumpMeta):
     """Collect Fields declared on the base classes."""
@@ -132,11 +134,13 @@ class RenderedForm(Vertical):
         self.form = form
         self.fields = form.fields
 
-    async def on_mount(self) -> None:
+    def compose(self):
         for field in self.form.fields.values():
-            await self.mount(Vertical(field.widget))
+            field.widget = field.create_widget()
+            yield Vertical(field.widget)
 
-    def validate(self) -> Dict[str, List[str]]:
+        """
+        def validate(self) -> Dict[str, List[str]]:
         form = self.form
         errors: Dict[str, List[str]] = {}
         for name, field in form.fields.items():
@@ -144,6 +148,56 @@ class RenderedForm(Vertical):
             if field_errors:
                 errors[name] = field_errors
         return errors
+        """
+
+
+    @property
+    def errors(self):  # These are form-specific errors
+        """Return an ErrorDict for the data provided for the form."""
+        if self._errors is None:
+            self.full_clean()
+        return self._errors
+
+    def _clean_fields(self):
+        for name, field in self.fields.items():
+            # value_from_datadict() gets the data from the data dictionaries.
+            # Each widget type knows how to retrieve its own data, because some
+            # widgets split data over several components.
+            widget = field.widget
+            if widget.errors:  # Field already validated
+                continue
+            if field.disabled:
+                value = self.get_initial_for_field(field, name)
+            else:
+                value = field.widget.value(self.add_prefix(name))
+            try:
+                if isinstance(field, FileField):
+                    initial = self.get_initial_for_field(field, name)
+                    value = field.clean(value, initial)
+                else:
+                    value = field.clean(value)
+                self.cleaned_data[name] = value
+                if hasattr(self, 'clean_%s' % name):
+                    value = getattr(self, 'clean_%s' % name)()
+                    self.cleaned_data[name] = value
+            except ValidationError as e:
+                self.add_error(name, e)
+
+    def full_clean(self):
+        """
+        Clean all of self.data and populate self._errors and self.cleaned_data.
+        """
+        self._errors = ErrorDict()
+        self.cleaned_data = {}
+        # If the form is permitted to be empty, and none of the form data has
+        # changed from the initial data, short circuit any validation.
+        #if self.empty_permitted and not self.has_changed():
+            #return
+
+        self._clean_fields()
+        self._clean_form()
+        self._post_clean()
+
 
     def get_data(self) -> Dict[str, Any]:
         data: Dict[str, Any] = {}

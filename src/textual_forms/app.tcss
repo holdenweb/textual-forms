@@ -1,0 +1,6 @@
+Vertical {
+    height: auto;
+}
+Static {
+    width: auto;
+}

@@ -41,4 +41,8 @@ async def test_integer_field(app):
 @pytest.mark.asyncio
 async def test_rendered_form(app):
     async with app.run_test() as pilot:
-        assert list(app.app_form.rform.fields) == ["name", "age", "is_active", "choice"]
+        fields = app.app_form.rform.fields
+        assert list(fields) == ["name", "age", "is_active", "choice"]
+        for field in fields:
+            if field.widget.errors:
+

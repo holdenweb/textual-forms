@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Optional
 
-from .widget import TextFieldWidget, IntegerFieldWidget, BooleanFieldWidget, ChoiceFieldWidget
+from .widget import TextWidget, IntegerWidget, BooleanWidget, ChoiceWidget
 
 class Field:
 
@@ -58,7 +58,7 @@ class Field:
 
 class TextField(Field):
     def create_widget(self):
-        return TextFieldWidget(field = self, **self.kwargs)
+        return TextWidget(field = self, validate_on="blur", **self.kwargs)
 
     def field_default_value(self):
         return ""
@@ -66,7 +66,7 @@ class TextField(Field):
 
 class IntegerField(Field):
     def create_widget(self):
-        return IntegerFieldWidget(field = self, **self.kwargs)
+        return IntegerWidget(field=self, validators=self.validators, **self.kwargs)
 
     def to_python(self, value: str) -> Optional[int]:
         try:
@@ -80,7 +80,7 @@ class IntegerField(Field):
 
 class BooleanField(Field):
     def create_widget(self):
-        return BooleanFieldWidget(field = self, **self.kwargs)
+        return BooleanWidget(field=self, **self.kwargs)
 
     def to_python(self, value: bool) -> bool:
         return value
@@ -102,13 +102,12 @@ class ChoiceField(Field):
         self.choices = choices
         self.kwargs = kwargs
         super().__init__(label, required, validators, help_text, **kwargs)
-        self.widget = self.create_widget()
 
     def field_default_value(self):
         return None
 
     def create_widget(self):
-        return ChoiceFieldWidget(field=self, choices=self.choices, **self.kwargs)
+        return ChoiceWidget(field=self, choices=self.choices, **self.kwargs)
 
     def to_python(self, value: str) -> str:
         return value
