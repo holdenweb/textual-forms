@@ -22,7 +22,7 @@ class FieldWidget:
     async def on_input_changed(self, e):
         container = self.parent
         await container.remove_children(".erm")
-        if (vr := e.validation_result) is not None and vr.is_valid:
+        if (vr := e.validation_result) is not None and not vr.is_valid:
             for msg in vr.failure_descriptions:
                 container.mount(Center(Static(msg), classes="erm"))
 
