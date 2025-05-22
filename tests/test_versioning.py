@@ -1,4 +1,3 @@
-import wingdbstub
 import pytest
 
 import tempfile
