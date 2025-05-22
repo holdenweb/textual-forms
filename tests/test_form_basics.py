@@ -1,5 +1,3 @@
-import wingdbstub
-
 from textual_forms.app import MyApp
 import pytest
 @pytest.fixture(scope='function')
