@@ -3,7 +3,6 @@ from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanFie
 from textual.app import App, ComposeResult
 from textual.widgets import Button
 from textual.validation import Number, Validator, ValidationResult
-# Validator functions
 
 
 class EvenInteger(Validator):
@@ -13,17 +12,23 @@ class EvenInteger(Validator):
         except ValueError:
             return self.success()  # Handled by other validators
         if value % 2:
-            return self.failure("Odd number - yuck!")
+            return self.failure("Not an even number")
         else:
             return self.success()
 
+class Palindromic(Validator):
+    def validate(self, value: str) -> ValidationResult:
+        if value == value[::-1]:
+            return self.success()
+        else:
+            return self.failure("Not palindromic")
+
 
 class MyForm(Form):
-
-    name = TextField(label="Name", required=True, id="form-name")
-    age = IntegerField(label="Age", required=False,
+    name = TextField(placeholder="Name (palindrome)", required=True, validators=[Palindromic()], id="form-name")
+    age = IntegerField(placeholder="Age (must be even)", required=False,
         validators=[Number(minimum=0, maximum=130), EvenInteger()], id="form-age")
-    is_active = BooleanField(label="Active", id="form-isactive")
+    is_active = BooleanField(id="form-isactive")
     choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection", id='form-choice')
 
 class MyApp(App):
@@ -35,7 +40,6 @@ class MyApp(App):
 
     def compose(self) -> ComposeResult:
         yield self.app_form.render_form(id="form-container")
-        yield Button("Submit")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         self.app.log(self.app.tree)

@@ -1,6 +1,14 @@
 Vertical {
+    margin: 1;
+    width: 1fr;
     height: auto;
+}
+TextInput, IntegerInput {
+    padding: 0;
 }
 Static {
     width: auto;
+}
+RenderedForm {
+    keyline: heavy blue;
 }

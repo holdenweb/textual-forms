@@ -21,8 +21,6 @@ class Field:
         self.name: str = ""
         self.form: Optional["Form"] = None  # Forward reference
         self.disabled = disabled
-        self.widget = self.create_widget()
-        #self.value: Any = self.field_default_value()
 
     def field_default_value(self) -> None:
         raise TypeError("Field subclasses should implement the field_default_value method")
@@ -58,7 +56,7 @@ class Field:
 
 class TextField(Field):
     def create_widget(self):
-        return TextWidget(field = self, validate_on="blur", **self.kwargs)
+        return TextWidget(field=self, validators=self.validators, **self.kwargs)
 
     def field_default_value(self):
         return ""
@@ -68,14 +66,12 @@ class IntegerField(Field):
     def create_widget(self):
         return IntegerWidget(field=self, validators=self.validators, **self.kwargs)
 
-    def to_python(self, value: str) -> Optional[int]:
+    @property
+    def value(self) -> Optional[int]:
         try:
-            return int(value)
+            return int(self.widget.value)
         except ValueError:
             return None
-
-    def field_default_value(self):
-        return 42
 
 
 class BooleanField(Field):

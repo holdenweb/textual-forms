@@ -25,12 +25,10 @@ def read_version(toml_file_path: str) -> str:
     Returns:
         The version string found in 'project.version'.
 
-    Raises:
-        FileNotFoundError: If the TOML file does not exist.
+    Raises (in addition to standard):
         TomlProcessingError: If the TOML file is invalid, missing 'project'
                              or 'project.version' keys, or if 'project'
                              is not a table/dictionary.
-        IOError: If there's an error reading the file.
     """
     if not os.path.exists(toml_file_path):
         raise FileNotFoundError(f"TOML file not found at '{toml_file_path}'.")
@@ -120,7 +118,7 @@ def write_version(toml_file_path: str, new_version_str: str) -> None:
 
 def update_project_version(toml_file_path: str, new_version_str: str) -> None:
     """
-    Orchestrates updating the 'project.version' in a TOML file if the
+    Update the 'project.version' in a TOML file if the
     new version is valid and greater than the existing version.
 
     Args:
@@ -137,35 +135,30 @@ def update_project_version(toml_file_path: str, new_version_str: str) -> None:
         TypeError: If TOML structure is incorrect.
         KeyError: If expected TOML keys are missing.
     """
-    # Validate the new version string format using semver
+    # Validate the new version string format
     try:
         new_version = semver.Version.parse(new_version_str)
     except ValueError:
-        # Raise specific custom exception
         raise VersionValidationError(
             f"Provided new version '{new_version_str}' is not a valid semantic version (e.g., '1.2.3')."
         )
 
-    # Read existing version (delegate error handling to read_version)
-    # Exceptions from read_version (FileNotFound, TomlProcessingError, IOError) will propagate up
     existing_version_str = read_version(toml_file_path)
 
-    # Validate the existing version string format
     try:
         existing_version = semver.Version.parse(existing_version_str)
     except ValueError:
         raise VersionValidationError(
             f"Existing version '{existing_version_str}' in '{toml_file_path}' is not a valid semantic version."
         )
-    # Compare the versions
+
     if new_version <= existing_version:
         raise VersionValidationError(
             f"New version '{new_version_str}' ({new_version}) is not strictly greater "
             f"than the existing version '{existing_version_str}' ({existing_version})."
         )
 
-    # Write the new version (delegate error handling to write_version)
-    # Exceptions from write_version will propagate up
+
     write_version(toml_file_path, new_version_str)
 
 if __name__ == '__main__':

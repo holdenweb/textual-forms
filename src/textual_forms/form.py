@@ -5,7 +5,7 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual.containers import Vertical
-from textual.widgets import Static
+from textual.widgets import Static, Button
 from textual.message_pump import _MessagePumpMeta
 
 
@@ -138,6 +138,7 @@ class RenderedForm(Vertical):
         for field in self.form.fields.values():
             field.widget = field.create_widget()
             yield Vertical(field.widget)
+        yield Vertical(Button("Submit"))
 
         """
         def validate(self) -> Dict[str, List[str]]:
