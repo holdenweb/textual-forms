@@ -1,8 +1,17 @@
+import wingdbstub
+
 from textual_forms.app import MyApp
 import pytest
-@pytest.fixture(scope='function')
+import pytest_asyncio
+
+@pytest.fixture()
 def app():
     yield MyApp()
+
+@pytest_asyncio.fixture()
+async def pilot(app):
+    async with app.run_test() as p:
+        yield p
 
 @pytest.mark.asyncio
 async def test_text_field(app):
@@ -33,14 +42,14 @@ async def test_integer_field(app):
             await pilot.press(c)
         v = age_widget.value
         assert v == '120'
-        assert age_widget.field.to_python(v) == 120
+        assert age_widget.field.value == 120
 
 
 @pytest.mark.asyncio
-async def test_rendered_form(app):
-    async with app.run_test() as pilot:
-        fields = app.app_form.rform.fields
-        assert list(fields) == ["name", "age", "is_active", "choice"]
-        for field in fields:
-            if field.widget.errors:
+async def test_rendered_form(app, pilot):
+    fields = app.app_form.rform.fields
+    assert list(fields) == ["name", "age", "is_active", "choice"]
 
+@pytest.mark.asyncio
+async def test_x(pilot):
+    assert pilot is not None

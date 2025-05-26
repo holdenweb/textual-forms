@@ -1,3 +1,4 @@
+# field.py
 from typing import Any, Callable, List, Optional
 
 from .widget import TextWidget, IntegerWidget, BooleanWidget, ChoiceWidget
@@ -19,11 +20,8 @@ class Field:
         self.validators = validators or []
         self.help_text = help_text
         self.name: str = ""
-        self.form: Optional["Form"] = None  # Forward reference
+        self.form: Optional["Form"] = None
         self.disabled = disabled
-
-    def field_default_value(self) -> None:
-        raise TypeError("Field subclasses should implement the field_default_value method")
 
     def run_validators(self, value: Any) -> List[str]:
         errors: List[str] = []
@@ -44,9 +42,6 @@ class Field:
     def value(self, value):
         self.widget.value = str(value)
 
-    def to_python(self, value: Any) -> Any:
-        return value
-
     def to_widget_value(self, value: Any) -> Any:
         return value
 
@@ -57,10 +52,6 @@ class Field:
 class TextField(Field):
     def create_widget(self):
         return TextWidget(field=self, validators=self.validators, **self.kwargs)
-
-    def field_default_value(self):
-        return ""
-
 
 class IntegerField(Field):
     def create_widget(self):
@@ -81,9 +72,6 @@ class BooleanField(Field):
     def to_python(self, value: bool) -> bool:
         return value
 
-    def field_default_value(self):
-        return False
-
 class ChoiceField(Field):
 
     def __init__(
@@ -99,15 +87,8 @@ class ChoiceField(Field):
         self.kwargs = kwargs
         super().__init__(label, required, validators, help_text, **kwargs)
 
-    def field_default_value(self):
-        return None
-
     def create_widget(self):
         return ChoiceWidget(field=self, choices=self.choices, **self.kwargs)
 
     def to_python(self, value: str) -> str:
         return value
-
-    def field_default_value(self):
-        return 42
-

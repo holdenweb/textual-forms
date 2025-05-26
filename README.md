@@ -1,35 +1,84 @@
 ## textual_forms
 
-This is the very beginning of a forms package for textual, (very) loosely
-based on the Django forms framework, although currently with far fewer
-refinements and lots of omissions. The intention is to provide a declarative
+This is the modest beginning of a forms package for textual.
+The intention is to provide a declarative
 framework for data entry and editing that is usable and useful enough to have
 people extend it rather than craft their own.
 
-This document is intended to facilitate and guide design discussions
-on the textual Discord server.
-
-If this project is left to me it will die, because I already know I have
-neither the time nor the energy to support such an effort alone. Some
-interest has, however, already been expressed by various community members
-and so my hope is that it will inspire the textual community to help with
-discussions on Discord, suggestions, issues and most valuable of all, pull
-requests.
-
-As of this 0.2.2 release, control of development uses the _uv_ utility,
-which among other things makes running the demo much simpler. The command
+If you have `uv` installed you can run the demo program without cloning
+the repository with the `uvx` command
 
     uvx --from git+https://github.com/holdenweb/textual-forms.git forms-app
 
-should display a screen that looks something like this.
+This should produce a window that looks something like this:
 
-![Screenshot of forms.py in action](images/screenshot.gif "forms.py demo")
+![Screenshot of forms.py in action](images/screenshot.gif "textual_forms demo")
+
+The inputs are validated on any change, and validation problems are reported
+underneath the field in question.
+
+![Screenshot of validation messages](images/validation.gif "textual_forms validation")
+
+When you submit the form, the demo program displays the values you've entered as a
+dictionary, keyed by the field names.
+
+![Screenshot of forms result](images/results.gif "textual_forms validation")
+
+Below is the source for the form from the demo program, which
+contains one of each of the currently-supported field types.
+
+``` python
+class MyForm(Form):
+    name = TextField(
+        placeholder="Name (palindrome)",
+        required=True,
+        validators=[Palindromic()],
+        id="form-name",
+    )
+    age = IntegerField(
+        placeholder="Age (must be even)",
+        required=False,
+        validators=[Number(minimum=0, maximum=130), EvenInteger()],
+        id="form-age",
+    )
+
+    is_active = BooleanField(label="Active?", id="form-isactive")
+
+    choice = ChoiceField(
+        prompt="Select pill colo(u)r",
+        choices=[("blue", "Option 1"), ("red", "Option 2")],
+        label="Selection",
+        id="form-choice",
+    )
+```
 
 ### Testing
 
 A Makefile with two targets exists. `make test` runs pytest, reporting each
 test on its own line. `make coverage` runs pytest and reports on current test
 suite coverage.
+
+
+## Further Development
+
+If this project is left to me it will die, because I already know I have
+neither the time nor the energy to support such an effort alone. Some
+interest has, however, already been expressed b∆y various community members
+and so my hope is that this initial effort will inspire the `textual` community to help with
+discussions on Discord, suggestions, issues.
+Pull requests are always most valuable, but at this stage discussions,
+suggestions and issues are just as necessary!
+
+The remainder of this document is intended to facilitate and guide design
+discussions on the textual Discord server. I have already identified a number
+of high-priority issues which are [logged in the
+repository](https://github.com/holdenweb/textual-forms/issues) The notes are
+somewhat outdates and do not necessarily refelct current thinking - for
+example, a FileField could (except for textual web) simply provide a path to
+local filestore.
+
+Differences between the desktop and textual-web environments will need careful consideration.
+
 
 ### Architecture
 
@@ -70,7 +119,8 @@ Because some widgets can be compound (e.g. day, month, year in a date picker)
 the widget accepts values as a dict, and returns them the same way. By
 convention a simple widget uses the `value` key for its value item.
 
-When a Form's `render` method is called all fields in the `data` and `files` dicts are set to the given
+When a Form's `render` method is called all fields in the `data`
+and `files` dicts are set to the given
 values; fields not included in the data are set to their default values, if
 specified. If any fields are left without a value when one or both of the
 dictionaries are passed a ValueError exception is raised.

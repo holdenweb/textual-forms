@@ -1,3 +1,4 @@
+# form.py
 import copy
 
 from .field import Field
@@ -5,7 +6,7 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual.containers import Vertical
-from textual.widgets import Static, Button
+from textual.widgets import Button
 from textual.message_pump import _MessagePumpMeta
 
 
@@ -19,12 +20,12 @@ class FormMetaclass(_MessagePumpMeta):
                 # add each field to current_fields and remove as attribute
                 current_fields.append((key, value))
                 attrs.pop(key)
-        declared_fields = dict(current_fields)
+        _declared_fields = dict(current_fields)
 
         new_class = super().__new__(mcs, name, bases, attrs)
 
-        new_class.base_fields = declared_fields
-        new_class.declared_fields = declared_fields
+        new_class._base_fields = _declared_fields
+        new_class._declared_fields = _declared_fields
 
         return new_class
 
@@ -38,12 +39,12 @@ class BaseForm:
 
 
         # THIS CHUNK FROM DJANGO
-        # The base_fields class attribute is the *class-wide* definition of
+        # The _base_fields class attribute is the *class-wide* definition of
         # fields. Because a particular *instance* of the class might want to
-        # alter self.fields, we create self.fields here by copying base_fields.
+        # alter self.fields, we create self.fields here by copying _base_fields.
         # Instances should always modify self.fields; they should not modify
-        # self.base_fields.
-        self.fields = copy.deepcopy(self.base_fields)
+        # self._base_fields.
+        self.fields = copy.deepcopy(self._base_fields)
         self._bound_fields_cache = {}
         self.order_fields(self.field_order if field_order is None else field_order)
         # THIS CHUNK FROM DJANGO ENDS
@@ -56,32 +57,10 @@ class BaseForm:
                     self.fields[name].name = name
                     self.fields[name].form = self
         else:
-            for name, field in self.declared_fields.items():
+            for name, field in self._declared_fields.items():
                 self.fields[name] = field
                 field.name = name
                 field.form = self
-
-    def _clean_fields(self):
-        for name, field in self.fields.items():
-            # value_from_datadict() gets the data from the data dictionaries.
-            # Each widget type knows how to retrieve its own data, because some
-            # widgets split data over several HTML fields.
-            if field.disabled:
-                value = self.get_initial_for_field(field, name)
-            else:
-                value = field.widget.value_from_datadict(self.data, self.files, self.add_prefix(name))
-            try:
-                if isinstance(field, FileField):
-                    initial = self.get_initial_for_field(field, name)
-                    value = field.clean(value, initial)
-                else:
-                    value = field.clean(value)
-                self.cleaned_data[name] = value
-                if hasattr(self, 'clean_%s' % name):
-                    value = getattr(self, 'clean_%s' % name)()
-                    self.cleaned_data[name] = value
-            except ValidationError as e:
-                self.add_error(name, e)
 
     def order_fields(self, field_order):
         """
@@ -139,65 +118,6 @@ class RenderedForm(Vertical):
             field.widget = field.create_widget()
             yield Vertical(field.widget)
         yield Vertical(Button("Submit"))
-
-        """
-        def validate(self) -> Dict[str, List[str]]:
-        form = self.form
-        errors: Dict[str, List[str]] = {}
-        for name, field in form.fields.items():
-            field_errors = field.run_validators(field.value)
-            if field_errors:
-                errors[name] = field_errors
-        return errors
-        """
-
-
-    @property
-    def errors(self):  # These are form-specific errors
-        """Return an ErrorDict for the data provided for the form."""
-        if self._errors is None:
-            self.full_clean()
-        return self._errors
-
-    def _clean_fields(self):
-        for name, field in self.fields.items():
-            # value_from_datadict() gets the data from the data dictionaries.
-            # Each widget type knows how to retrieve its own data, because some
-            # widgets split data over several components.
-            widget = field.widget
-            if widget.errors:  # Field already validated
-                continue
-            if field.disabled:
-                value = self.get_initial_for_field(field, name)
-            else:
-                value = field.widget.value(self.add_prefix(name))
-            try:
-                if isinstance(field, FileField):
-                    initial = self.get_initial_for_field(field, name)
-                    value = field.clean(value, initial)
-                else:
-                    value = field.clean(value)
-                self.cleaned_data[name] = value
-                if hasattr(self, 'clean_%s' % name):
-                    value = getattr(self, 'clean_%s' % name)()
-                    self.cleaned_data[name] = value
-            except ValidationError as e:
-                self.add_error(name, e)
-
-    def full_clean(self):
-        """
-        Clean all of self.data and populate self._errors and self.cleaned_data.
-        """
-        self._errors = ErrorDict()
-        self.cleaned_data = {}
-        # If the form is permitted to be empty, and none of the form data has
-        # changed from the initial data, short circuit any validation.
-        #if self.empty_permitted and not self.has_changed():
-            #return
-
-        self._clean_fields()
-        self._clean_form()
-        self._post_clean()
 
 
     def get_data(self) -> Dict[str, Any]:

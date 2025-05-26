@@ -1,3 +1,4 @@
+# widget.py
 from typing import List
 
 from textual import on
@@ -26,12 +27,6 @@ class FieldWidget:
             for msg in vr.failure_descriptions:
                 container.mount(Center(Static(msg), classes="erm"))
 
-    def errors(self):
-        if not hasattr(self, '_errors') :
-            # Field was never focused: validate to build _errors
-            self._errors = self.validate()
-        return self._errors
-
 
 class TextWidget(Input, FieldWidget):
     def __init__(self, field: "Field", **kwargs):  # Forward reference
@@ -50,15 +45,8 @@ class BooleanWidget(Checkbox, FieldWidget):
         super().__init__(**kwargs)
         self.field = field
 
-    def field_default_value(self):
-        return False
-
 
 class ChoiceWidget(Select, FieldWidget):
     def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field
-
-    def field_default_value(self):
-        return Select.BLANK
-

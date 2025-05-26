@@ -27,3 +27,6 @@ only-include = [ "src/textual_forms",]
 
 [tool.hatch.build.targets.wheel.sources]
 "src/textual_forms" = "textual_forms"
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "session"
