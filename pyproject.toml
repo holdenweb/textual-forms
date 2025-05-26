@@ -1,6 +1,6 @@
 [project]
 name = "textual-forms"
-version = "0.3.2"
+version = "0.4.0"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -19,6 +19,9 @@ build-backend = "hatchling.build"
 [project.scripts]
 forms-app = "textual_forms.app:main"
 
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "session"
+
 [tool.hatch.build.targets.sdist]
 only-include = [ "src/textual_forms",]
 
@@ -27,6 +30,3 @@ only-include = [ "src/textual_forms",]
 
 [tool.hatch.build.targets.wheel.sources]
 "src/textual_forms" = "textual_forms"
-
-[tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "session"
