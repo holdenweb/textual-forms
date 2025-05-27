@@ -67,7 +67,7 @@ class IntegerField(Field):
 
 class BooleanField(Field):
     def create_widget(self):
-        return BooleanWidget(field=self, **self.kwargs)
+        return BooleanWidget(field=self, label=self.label, **self.kwargs)
 
     def to_python(self, value: bool) -> bool:
         return value

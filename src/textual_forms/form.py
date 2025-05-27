@@ -5,8 +5,10 @@ from .field import Field
 
 from typing import Dict, Any, Optional, List
 
+from textual import on
 from textual.containers import Vertical
 from textual.widgets import Button
+from textual.message import Message
 from textual.message_pump import _MessagePumpMeta
 
 
@@ -30,6 +32,12 @@ class FormMetaclass(_MessagePumpMeta):
         return new_class
 
 class BaseForm:
+
+    class Submitted(Message):
+        def __init__(self, form):
+            super().__init__()
+            self.form = form
+
     def __init__(self, *children, field_order: Optional[List[str]] = None, **kwargs):
         self.children = children
         self.field_order = field_order
@@ -131,3 +139,10 @@ class RenderedForm(Vertical):
             if name in self.form.fields:
                 self.form.fields[name].value = value
                 self.form.fields[name].widget.value = self.form.fields[name].to_widget_value(value)
+
+    def on_button_pressed(self, event: Button.Pressed) -> None:
+        form = self.app.query_one("#form-container")
+        #if form.validate():
+        data = form.get_data()
+        self.post_message(Form.Submitted(self))
+

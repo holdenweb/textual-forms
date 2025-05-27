@@ -1,4 +1,5 @@
 # app.py
+from textual import on
 from textual_forms.validators import EvenInteger, Palindromic
 from textual_forms.form import Form
 from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
@@ -37,12 +38,13 @@ class MyApp(App):
     def compose(self) -> ComposeResult:
         yield self.app_form.render_form(id="form-container")
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        self.app.log(self.app.tree)
-        form = self.app.query_one("#form-container")
+    @on(Form.Submitted)
+    def form_submitted(self, event: Form.Submitted) -> None:
         #if form.validate():
+        form = event.form
         data = form.get_data()
         self.notify(f"Form data: {data}")
+        self.app.log(self.app.tree)
 
 
 def main():
