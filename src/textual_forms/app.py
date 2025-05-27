@@ -1,3 +1,5 @@
+import wingdbstub
+
 # app.py
 from textual import on
 from textual_forms.validators import EvenInteger, Palindromic

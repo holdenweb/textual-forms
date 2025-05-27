@@ -12,7 +12,7 @@ from textual.message import Message
 from textual.message_pump import _MessagePumpMeta
 
 
-class FormMetaclass(_MessagePumpMeta):
+class FormMetaclass(type):
     """Collect Fields declared on the base classes."""
     def __new__(mcs, name, bases, attrs):
         # Collect fields from current class.
@@ -37,6 +37,7 @@ class BaseForm:
         def __init__(self, form):
             super().__init__()
             self.form = form
+
 
     def __init__(self, *children, field_order: Optional[List[str]] = None, **kwargs):
         self.children = children
