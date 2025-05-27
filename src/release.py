@@ -21,7 +21,7 @@ def release(version):
     with open("src/textual_forms/version.py", "w") as pyfile:
         pyfile.write(pystring)
         print("Wrote", pyfile)
-    retcode = subprocess.call("uv", "lock"])
+    retcode = subprocess.call(["uv", "lock"])
     cmd = ["git", "add", "uv.lock", "pyproject.toml", "src/textual_forms/version.py"]  # Note: excludes files previously added
     retcode = subprocess.call(cmd)
     cmd = ["git", "commit", "-m", f"Release r{version}"]
