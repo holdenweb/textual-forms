@@ -63,7 +63,7 @@ suite coverage.
 
 If this project is left to me it will die, because I already know I have
 neither the time nor the energy to support such an effort alone. Some
-interest has, however, already been expressed b∆y various community members
+interest has, however, already been expressed by various community members
 and so my hope is that this initial effort will inspire the `textual` community to help with
 discussions on Discord, suggestions, issues.
 Pull requests are always most valuable, but at this stage discussions,
