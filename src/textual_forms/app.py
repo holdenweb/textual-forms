@@ -25,32 +25,38 @@ class MyForm(Form):
     is_active = BooleanField(label="Active?", id="form-isactive")
     choice = ChoiceField(
         prompt="Select pill colo(u)r",
-        choices=[("blue", "Option 1"), ("red", "Option 2")],
+        choices=[("blue", "Blue"), ("red", "Red")],
         label="Selection",
         id="form-choice",
     )
 
-class MyApp(App):
+def build_app(data=None):
 
-    CSS_PATH = "app.tcss"
-    def __init__(self, *args, **kwargs):
-        self.app_form = MyForm()  # simplify access for testing and debugging
-        super().__init__(*args, **kwargs)
+    class MyApp(App):
 
-    def compose(self) -> ComposeResult:
-        yield self.app_form.render_form(id="form-container")
+        CSS_PATH = "app.tcss"
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.app_form = MyForm(data=data)  # simplify access for testing and debugging
 
-    @on(Form.Submitted)
-    def form_submitted(self, event: Form.Submitted) -> None:
-        #if form.validate():
-        form = event.form
-        data = form.get_data()
-        self.notify(f"Form data: {data}")
-        self.app.log(self.app.tree)
+        def compose(self) -> ComposeResult:
+            yield self.app_form.render_form(id="form-container")
 
+        @on(Form.Submitted)
+        def form_submitted(self, event: Form.Submitted) -> None:
+            #if form.validate():
+            form = event.form
+            data = form.get_data()
+            self.notify(f"Form data: {data}")
+            self.app.log(self.app.tree)
+
+        def on_click(self, e):
+            self.log(self.tree)
+
+    return MyApp()
 
 def main():
-    app = MyApp()
+    app = build_app(data=None)
     app.run()
 
 if __name__ == "__main__":

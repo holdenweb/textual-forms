@@ -39,7 +39,8 @@ class BaseForm:
             self.form = form
 
 
-    def __init__(self, *children, field_order: Optional[List[str]] = None, **kwargs):
+    def __init__(self, *children, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, **kwargs):
+        self.data = data
         self.children = children
         self.field_order = field_order
         self.kwargs = kwargs
@@ -54,7 +55,6 @@ class BaseForm:
         # Instances should always modify self.fields; they should not modify
         # self._base_fields.
         self.fields = copy.deepcopy(self._base_fields)
-        self._bound_fields_cache = {}
         self.order_fields(self.field_order if field_order is None else field_order)
         # THIS CHUNK FROM DJANGO ENDS
 
@@ -102,7 +102,7 @@ class BaseForm:
         XXX There's no way to specify the buttons, so there's just a submit
         for the present.
         """
-        self.rform = RenderedForm(self, id=id)
+        self.rform = RenderedForm(self, id=id, data=self.data)
         return self.rform
 
 
@@ -117,17 +117,20 @@ class Form(BaseForm, metaclass=FormMetaclass):
 
 class RenderedForm(Vertical):
 
-    def __init__(self, form, id=None):
+    def __init__(self, form, data: Optional[Dict[str, Any]] = None, id=None):
         super().__init__(*form.children, id=id, **form.kwargs)
         self.form = form
         self.fields = form.fields
+        self.data = data
+        for name, field in self.form.fields.items():
+            field.widget = field.create_widget()
+        if data is not None:
+            self.set_data(data)
 
     def compose(self):
-        for field in self.form.fields.values():
-            field.widget = field.create_widget()
+        for name, field in self.form.fields.items():
             yield Vertical(field.widget)
         yield Vertical(Button("Submit"))
-
 
     def get_data(self) -> Dict[str, Any]:
         data: Dict[str, Any] = {}
@@ -138,8 +141,7 @@ class RenderedForm(Vertical):
     def set_data(self, data: Dict[str, Any]):
         for name, value in data.items():
             if name in self.form.fields:
-                self.form.fields[name].value = value
-                self.form.fields[name].widget.value = self.form.fields[name].to_widget_value(value)
+                self.form.fields[name].widget.value = str(value)
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         form = self.app.query_one("#form-container")

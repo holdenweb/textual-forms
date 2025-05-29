@@ -1,12 +1,11 @@
-import wingdbstub
-
-from textual_forms.app import MyApp
+from textual_forms.app import build_app
 import pytest
 import pytest_asyncio
 
 @pytest_asyncio.fixture(loop_scope="function")
 def app():
-    yield MyApp()
+    # Fine when not providing data ...
+    yield build_app()
 
 @pytest_asyncio.fixture(loop_scope="function")
 async def pilot(app):

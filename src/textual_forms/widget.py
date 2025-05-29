@@ -30,13 +30,13 @@ class FieldWidget:
 
 class TextWidget(Input, FieldWidget):
     def __init__(self, field: "Field", **kwargs):  # Forward reference
-        super().__init__(**kwargs)
+        super().__init__(select_on_focus=False, **kwargs)
         self.field = field
 
 
 class IntegerWidget(Input, FieldWidget):
     def __init__(self, field: "Field",  **kwargs): # Forward reference
-        super().__init__(type='integer', **kwargs)
+        super().__init__(type='integer', select_on_focus=False, **kwargs)
         self.field = field
 
 

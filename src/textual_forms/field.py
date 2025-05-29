@@ -39,7 +39,7 @@ class Field:
         return self.widget.value
 
     @value.setter
-    def value(self, value):
+    def value(self, value):  # Doesn't work for non-strring fields (esp. BooleanWidget)
         self.widget.value = str(value)
 
     def to_widget_value(self, value: Any) -> Any:
@@ -71,6 +71,14 @@ class BooleanField(Field):
 
     def to_python(self, value: bool) -> bool:
         return value
+
+    @property
+    def value(self):
+        return {'True': True, 'False': False}[self.widget.value]
+
+    @value.setter
+    def value(self, value):  # Doesn't work for non-string fields (esp. BooleanWidget)
+        self.widget.value = str(value)
 
 class ChoiceField(Field):
 
