@@ -53,18 +53,29 @@ class MyForm(Form):
     is_active = BooleanField(label="Active")
     choice = ChoiceField(choices=[("option1","Option 1"),("option2","Option 2")], label = "Selection")
 
-class MyApp(App):
-    def compose(self) -> ComposeResult:
-        yield Vertical(MyForm(), Button("Submit"), id="form_container")
+def build_app(data=None, field_order=None):
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        form = self.query_one(MyForm)
-        if form.validate():
-            data = form.get_data()
-            self.notify(f"Form data: {data}")
-        else:
-            self.notify("Form validation failed.")
+    class MyApp(App):
+
+        CSS_PATH = "app.tcss"
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self.app_form = MyForm(data=data, field_order=field_order)  # simplify access for testing and debugging
+
+        def compose(self) -> ComposeResult:
+            yield Vertical(MyForm(), Button("Submit"), id="form_container")
+
+        def on_button_pressed(self, event: Button.Pressed) -> None:
+            form = self.query_one(MyForm)
+            if form.validate():
+                data = form.get_data()
+                self.notify(f"Form data: {data}")
+            else:
+                self.notify("Form validation failed.")
+
+    return MyApp(data=None, field_order=None)
 
 if __name__ == "__main__":
-    app = MyApp()
+    app = build_app()
     app.run()
