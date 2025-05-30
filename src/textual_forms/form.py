@@ -102,7 +102,7 @@ class BaseForm:
         XXX There's no way to specify the buttons, so there's just a submit
         for the present.
         """
-        self.rform = RenderedForm(self, id=id, data=self.data)
+        self.rform = RenderedForm(self, id=id, data=self.data, field_order=self.field_order)
         return self.rform
 
 
@@ -117,11 +117,12 @@ class Form(BaseForm, metaclass=FormMetaclass):
 
 class RenderedForm(Vertical):
 
-    def __init__(self, form, data: Optional[Dict[str, Any]] = None, id=None):
+    def __init__(self, form, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, id=None):
         super().__init__(*form.children, id=id, **form.kwargs)
         self.form = form
         self.fields = form.fields
         self.data = data
+        self.field_order = field_order
         for name, field in self.form.fields.items():
             field.widget = field.create_widget()
         if data is not None:
@@ -130,7 +131,9 @@ class RenderedForm(Vertical):
     def compose(self):
         for name, field in self.form.fields.items():
             yield Vertical(field.widget)
-        yield Vertical(Button("Submit"))
+            if self.data and name in self.data:
+                field.value = self.data[name]
+        yield Vertical(Button("Submit", id="submit"))
 
     def get_data(self) -> Dict[str, Any]:
         data: Dict[str, Any] = {}

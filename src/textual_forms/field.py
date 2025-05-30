@@ -64,6 +64,9 @@ class IntegerField(Field):
         except ValueError:
             return None
 
+    @value.setter
+    def value(self, value):
+        self.widget.value = str(value)
 
 class BooleanField(Field):
     def create_widget(self):
@@ -74,11 +77,12 @@ class BooleanField(Field):
 
     @property
     def value(self):
-        return {'True': True, 'False': False}[self.widget.value]
+        #return {'True': True, 'False': False}[self.widget.value]
+        return self.widget.value
 
     @value.setter
     def value(self, value):  # Doesn't work for non-string fields (esp. BooleanWidget)
-        self.widget.value = str(value)
+        self.widget.value = value
 
 class ChoiceField(Field):
 
