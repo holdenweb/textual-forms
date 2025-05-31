@@ -21,7 +21,7 @@ def build_app(data=None, field_order=None):
 
     class MyApp(App):
 
-        CSS_PATH = "form_test_app.tcss"
+        CSS_PATH = "forms_test_app.tcss"
 
         def __init__(self, data=None, field_order=None, *args, **kwargs):
             super().__init__(*args, **kwargs)
