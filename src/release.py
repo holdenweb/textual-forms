@@ -27,7 +27,7 @@ def release(version):
             if ("import" + " wingdbstub") in f.read():
                 oopsies.append(source)
     if oopsies:
-        sys.exit(f"Some files still import wingdbstub: {oopsies!r}")
+        sys.exit(f"Some files still use wingdbstub : {oopsies!r}")
 
     # We are clear to update the version - if it passes validation
     try:
