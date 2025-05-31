@@ -1,7 +1,7 @@
 import sys
 import subprocess
 import wingdbstub
-from setver import read_version, update_project_version
+from setver import read_version, update_project_version, VersionValidationError
 
 VERSION_TEMPLATE = """\
 
@@ -10,11 +10,29 @@ __version__ = "{version}"
 """
 
 def release(version):
-    # Modify version according to argument
+    # Ensure a clean environment
     if subprocess.call("git diff --quiet".split()) != 0:
         sys.exit("Current git branch is dirty: please commit "
                  "or stash changes before releasing")
-    update_project_version('pyproject.toml', version)
+
+    # Ensure no debug calls remain!
+    oopsies = []
+    stubs = list(glob("**/wingdbstub.py", recursive=True))
+    for source in glob("**/*.py", recursive=True):
+        if source in stubs:
+            continue
+        # TODO: fix release process to omit wingdbstub file(s)
+        with open(source) as f:
+            if "wingdbstub" in f.read():
+                oopsies.append(source)
+    if oopsies:
+        sys.exit(f"Some files still import wingdbstub: {oopsies!r}")
+
+    # We are clear to update the version - if it passes validation
+    try:
+        update_project_version('pyproject.toml', version)
+    except VersionValidationError as e:
+        sys.exit(e)
 
     # Check in an updated version.py
     pystring = VERSION_TEMPLATE.format(version=version)
