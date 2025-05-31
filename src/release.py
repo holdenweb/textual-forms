@@ -24,7 +24,7 @@ def release(version):
             continue
         # TODO: fix release process to omit wingdbstub file(s)
         with open(source) as f:
-            if "wingdbstub" in f.read():
+            if "import wingdbstub" in f.read():
                 oopsies.append(source)
     if oopsies:
         sys.exit(f"Some files still import wingdbstub: {oopsies!r}")
