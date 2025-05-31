@@ -2,6 +2,7 @@ import sys
 import subprocess
 import wingdbstub
 from setver import read_version, update_project_version, VersionValidationError
+from glob import glob
 
 VERSION_TEMPLATE = """\
 
