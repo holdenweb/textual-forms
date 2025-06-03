@@ -9,6 +9,13 @@ TextInput, IntegerInput {
 Static {
     width: auto;
 }
+Center {
+    width: 1fr;
+}
 RenderedForm {
     keyline: heavy blue;
+}
+Horizontal {
+    height: auto;
+    align: center middle;
 }

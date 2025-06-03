@@ -48,8 +48,9 @@ def build_app(data=None):
             self.notify(f"Form data: valid: {(await form.validate())}, {data}")
             self.app.log(self.app.tree)
 
-        def on_click(self, e):
-            self.log(self.tree)
+        #def on_click(self, e):
+            #self.log(self.tree)
+            #self.log(self.css_tree)
 
     return MyApp()
 

@@ -1,5 +1,4 @@
 # form.py
-import wingdbstub
 import copy
 
 from .field import Field
@@ -7,7 +6,7 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual import on
-from textual.containers import Vertical, Center
+from textual.containers import Vertical, Center, Horizontal
 from textual.widgets import Button, Static
 from textual.message import Message
 
@@ -113,6 +112,10 @@ class Form(BaseForm, metaclass=FormMetaclass):
             super().__init__()
             self.form = r_form
 
+    class Cancelled(Message):
+        def __init__(self, r_form):
+            super().__init__()
+
 
 class RenderedForm(Vertical):
 
@@ -132,7 +135,12 @@ class RenderedForm(Vertical):
             yield Vertical(field.widget)
             if self.data and name in self.data:
                 field.value = self.data[name]
-        yield Vertical(Button("Submit", id="submit"))
+        yield Vertical(
+            Horizontal(
+                Button("Cancel", id="cancel"),
+                Button("Submit", id="submit")
+            )
+        )
 
     def get_data(self) -> Dict[str, Any]:
         data: Dict[str, Any] = {}
