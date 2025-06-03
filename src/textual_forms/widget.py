@@ -1,11 +1,9 @@
 # widget.py
-from typing import List
+from typing import Any, List
 
-from textual import on
-from textual.widgets import Input, Checkbox, Select, Static, Label
+from textual.widgets import Input, Checkbox, Select, Static
 from textual.containers import Center
-from textual.events import Blur
-
+from textual.validation import ValidationResult
 
 def ids():
     count = 0
@@ -44,9 +42,12 @@ class BooleanWidget(Checkbox, FieldWidget):
     def __init__(self, field: "Field", **kwargs): # Forward reference
         super().__init__(**kwargs)
         self.field = field
-
+    def validate(self, value):
+        return ValidationResult()
 
 class ChoiceWidget(Select, FieldWidget):
     def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field
+    def validate(self, value):
+        return ValidationResult()

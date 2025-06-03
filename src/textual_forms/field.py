@@ -12,6 +12,7 @@ class Field:
         validators: Optional[List[Callable[[Any], List[str]]]] = None,
         help_text: str = "",
         disabled=False,
+        widget=None,
         **kwargs,
     ):
         self.kwargs = kwargs
@@ -22,17 +23,7 @@ class Field:
         self.name: str = ""
         self.form: Optional["Form"] = None
         self.disabled = disabled
-
-    def run_validators(self, value: Any) -> List[str]:
-        errors: List[str] = []
-        if self.required and value is None:
-            errors.append(f"{self.label} is required.")
-        if self.validators:
-            for validator in self.validators:
-                result = validator.validate(value)
-                if result:
-                    errors.append(result)
-        return errors
+        self.widget = widget
 
     @property
     def value(self):
@@ -46,7 +37,8 @@ class Field:
         return value
 
     def create_widget(self):
-        raise NotImplementedError("Subclasses must implement create_widget()")
+        if self.widget is None:
+            raise NotImplementedError("Fields with no default widget must implement create_widget()")
 
 
 class TextField(Field):

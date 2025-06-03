@@ -54,37 +54,40 @@ class MyForm(Form):
 
 ### Testing
 
-A Makefile with two targets exists. `make test` runs pytest, reporting each
-test on its own line. `make coverage` runs pytest and reports on current test
-suite coverage.
+A Makefile exists with various targets to assist developers.
+`make test` runs pytest, reporting each test on its own line.
+`make coverage` runs pytest and reports on current test suite coverage.
 
+`make release` prints the latest release number.
+`make release version=X.Y.Z` creates a new release tagged as `rX.Y.Z` locally.
+Still missing is a `publish` target that will push the latest release,
+and the new tag, to GitHub before publishing it on PyPi.
 
-## Further Development
+## Contribute!!
 
 If this project is left to me it will die, because I already know I have
 neither the time nor the energy to support such an effort alone. Some
 interest has, however, already been expressed by various community members
-and so my hope is that this initial effort will inspire the `textual` community to help with
-discussions on Discord, suggestions, issues.
+and so my hope is that this initial stimulus will inspire the `textual` community to help with
+discussions on Discord, suggestions, issues - indeed, any kind of engagement.
 Pull requests are always most valuable, but at this stage discussions,
 suggestions and issues are just as necessary!
 
 The remainder of this document is intended to facilitate and guide design
 discussions on the textual Discord server. I have already identified a number
 of high-priority issues which are [logged in the
-repository](https://github.com/holdenweb/textual-forms/issues) The notes are
-somewhat outdates and do not necessarily refelct current thinking - for
+repository](https://github.com/holdenweb/textual-forms/issues).
+Some of the notes are outdated and do not necessarily reflect current thinking - for
 example, a FileField could (except for textual web) simply provide a path to
 local filestore.
 
 Differences between the desktop and textual-web environments will need careful consideration.
+Note that by no means all aspects of the architecture described here are yet implemented,
+and there is rather more to do than currently listed to turn this into
+a library that people will want to use. Hence the need for help.
 
 
 ### Architecture
-
-Note that by no means all aspects of the architecture are yet implemented,
-and there is rather more to do than described here to turn this into
-something that people will want to use. Hence the need for help.
 
 The Form class is the basis of forms development; Forms contain one or more
 Fields, each of which is associated with a Widget instance, which may be of

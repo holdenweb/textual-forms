@@ -1,4 +1,6 @@
 from textual_forms.app import build_app
+from textual_forms.form import RenderedForm
+
 import pytest
 import pytest_asyncio
 
@@ -48,5 +50,9 @@ async def test_fields_present(app, pilot):
     assert list(fields) == ["name", "age", "is_active", "choice"]
 
 @pytest.mark.asyncio(loop_scope="function")
-async def test_x(pilot):
-    assert pilot is not None
+async def test_validation(app, pilot):
+    form = app.app_form.rform
+    form.set_data(dict(name="anna", age=34, is_active=False, pill_choice='Blue'))
+    assert await form.validate()
+    form.set_data({"age": 1331})
+    assert not await form.validate()

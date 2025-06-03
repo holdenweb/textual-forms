@@ -1,4 +1,5 @@
 # form.py
+import wingdbstub
 import copy
 
 from .field import Field
@@ -6,10 +7,9 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual import on
-from textual.containers import Vertical
-from textual.widgets import Button
+from textual.containers import Vertical, Center
+from textual.widgets import Button, Static
 from textual.message import Message
-from textual.message_pump import _MessagePumpMeta
 
 
 class FormMetaclass(type):
@@ -32,12 +32,6 @@ class FormMetaclass(type):
         return new_class
 
 class BaseForm:
-
-    class Submitted(Message):
-        def __init__(self, form):
-            super().__init__()
-            self.form = form
-
 
     def __init__(self, *children, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, **kwargs):
         self.data = data
@@ -114,6 +108,11 @@ class Form(BaseForm, metaclass=FormMetaclass):
     # to define a form using declarative syntax.
     # BaseForm itself has no way of designating self.fields.
 
+    class Submitted(Message):
+        def __init__(self, r_form):
+            super().__init__()
+            self.form = r_form
+
 
 class RenderedForm(Vertical):
 
@@ -146,9 +145,23 @@ class RenderedForm(Vertical):
             if name in self.form.fields:
                 self.form.fields[name].widget.value = str(value)
 
-    def on_button_pressed(self, event: Button.Pressed) -> None:
-        form = self.app.query_one("#form-container")
-        #if form.validate():
-        data = form.get_data()
-        self.post_message(Form.Submitted(self))
+    async def validate(self):
+        result = True
+        for name, field in self.fields.items():
+            widget = field.widget
+            container = widget.parent
+            await container.remove_children(".erm")
+            vr = widget.validate(widget.value)
+            if not vr.is_valid:
+                result = False
+                for msg in vr.failure_descriptions:
+                    container.mount(Center(Static(msg), classes="erm"))
+        return result
 
+    @on(Button.Pressed, "#submit")
+    async def on_button_pressed(self, event: Button.Pressed) -> None:
+        r_form = self.app.query_one("#form-container")
+        if await r_form.validate():
+            self.post_message(Form.Submitted(self))
+        else:
+            self.app.notify("Please fix issues before submitting")

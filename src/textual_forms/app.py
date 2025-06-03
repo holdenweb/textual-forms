@@ -1,10 +1,11 @@
+import wingdbstub
+
 # app.py
 from textual import on
 from textual_forms.validators import EvenInteger, Palindromic
 from textual_forms.form import Form
 from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
-from textual.widgets import Button
 from textual.validation import Number
 
 class MyForm(Form):
@@ -41,11 +42,10 @@ def build_app(data=None):
             yield self.app_form.render_form(id="form-container")
 
         @on(Form.Submitted)
-        def form_submitted(self, event: Form.Submitted) -> None:
-            #if form.validate():
+        async def form_submitted(self, event: Form.Submitted) -> None:
             form = event.form
             data = form.get_data()
-            self.notify(f"Form data: {data}")
+            self.notify(f"Form data: valid: {(await form.validate())}, {data}")
             self.app.log(self.app.tree)
 
         def on_click(self, e):
