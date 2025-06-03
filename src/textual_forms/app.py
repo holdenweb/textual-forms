@@ -46,7 +46,10 @@ def build_app(data=None):
             form = event.form
             data = form.get_data()
             self.notify(f"Form data: valid: {(await form.validate())}, {data}")
-            self.app.log(self.app.tree)
+
+        @on(Form.Cancelled)
+        def form_cancelled(self, event: Form.Cancelled) -> None:
+            self.notify("Cancelled")
 
         #def on_click(self, e):
             #self.log(self.tree)
