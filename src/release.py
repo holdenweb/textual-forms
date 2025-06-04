@@ -11,11 +11,6 @@ __version__ = "{version}"
 """
 
 def release(version):
-    # Ensure a clean environment
-    if subprocess.call("git diff --quiet".split()) != 0:
-        sys.exit("Current git branch is dirty: please commit "
-                 "or stash changes before releasing")
-
     # Ensure no debug calls remain!
     oopsies = []
     stubs = list(glob("**/wingdbstub.py", recursive=True))
@@ -28,6 +23,11 @@ def release(version):
                 oopsies.append(source)
     if oopsies:
         sys.exit(f"Some files still use wingdbstub : {oopsies!r}")
+
+    # Ensure a clean environment
+    if subprocess.call("git diff --quiet".split()) != 0:
+        sys.exit("Current git branch is dirty: please commit "
+                 "or stash changes before releasing")
 
     # We are clear to update the version - if it passes validation
     try:

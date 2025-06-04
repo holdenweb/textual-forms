@@ -6,21 +6,28 @@ framework for data entry and editing that is usable and useful enough to have
 people extend it rather than craft their own.
 
 If you have `uv` installed you can run the demo program without cloning
-the repository with the `uvx` command
+the repository with the `uvx` command.
 
     uvx --from git+https://github.com/holdenweb/textual-forms.git forms-app
 
-This should produce a window that looks something like this:
+This should produce a window that looks something like the one
+below.Terminate the run with CTRL-Q. The program is designed to let you
+experiment. Do feel free to exercise it, tweak it and provide feedback. I'm
+quite happy to receive feedback as issues against the repo, or as email to
+steve@holdenweb.com.
 
 ![Screenshot of forms.py in action](images/screenshot.gif "textual_forms demo")
 
 The inputs are validated on any change, and validation problems are reported
-underneath the field in question.
+underneath the field in question. Pressing the Submit button checks that all
+fields are valid, and if so posts a `Form.Submitted` Message; otherwise it
+displays a notification to fix the fields. Pressing Cancel posts a
+`Form.Cancelled` Message. Both Messages provide a reference to the form.
 
 ![Screenshot of validation messages](images/validation.gif "textual_forms validation")
 
-When you submit the form, the demo program displays the values you've entered as a
-dictionary, keyed by the field names.
+When the demo program receives `FormSubmitted` it notifies you of the values
+you've entered as a dictionary, keyed by the field names.
 
 ![Screenshot of forms result](images/results.gif "textual_forms validation")
 
@@ -54,7 +61,7 @@ class MyForm(Form):
 
 ### Testing
 
-A Makefile exists with various targets to assist developers.
+A Makefile exists with a few targets to assist developers.
 `make test` runs pytest, reporting each test on its own line.
 `make coverage` runs pytest and reports on current test suite coverage.
 
@@ -115,12 +122,14 @@ modifications).
 Setting a field's value inside the program propagates the change to the
 widget's display. The fields value can also be modified through the TUI.
 After any programmatic change the field's validators will be called,
-potentially raising ValidationErrors, the first of which should
-propagate to the client attempting to make the change.
+and any resulting ValidationErrors cause messages to display under the
+field.
 
-Because some widgets can be compound (e.g. day, month, year in a date picker)
+[Because some widgets can be compound (e.g. day, month, year in a date picker)
 the widget accepts values as a dict, and returns them the same way. By
 convention a simple widget uses the `value` key for its value item.
+
+-- _I'm not sure this is true at present__ SH --]
 
 When a Form's `render` method is called all fields in the `data`
 and `files` dicts are set to the given
@@ -130,33 +139,6 @@ dictionaries are passed a ValueError exception is raised.
 Otherwise the form components are mounted and become available for user
 interaction.
 
-Clicking the form's Submit button triggers its `full_clean` method.
-This clears the form's `_errors` and `cleaned_data` dictionaries, then
-calls its `_clean_fields`, `_clean_form()` and `_post_clean()` methods.
-
-`_clean_fields` iterates over the fields, extracting the values from
-the widgets and validating them. Any ValidationErrors arising
-(a field can have multiple validators) are stored
-in the form's `_errors` dictionary under the field name, and the `clean` method
-should return `None`; generic form errors are stored against a key of `None`.
-
-`_post_clean` is typically used when a form is being used to maintain a specific
-data model, to validate the data's suitability to populate a model instance once
-data validation has taken place. \[Is this a YAGNI?\]
-
-`_clean_form` method calls the form's `clean` method (null by default,
-but overridable by subclasses), which will either raise a ValidationError
-(which is stored in the form's `_errors` dict under a `None` key) or
-return the form's `cleaned_data` dict.
-
-The form's `errors` property, when accessed, checks the form's `_errors`
-attribute, and if its value is `None` it calls the `full_clean` method. It
-then returns the form's `_errors` dict, which is empty if no errors were
-detected.
-
-When no errors are detected a FormSubmitted event is raised with the
-validated form data available as an attribute of the event. If the form is
-cancelled a FormCancelled event is raised.
 
 ### Specific refactorings
 
@@ -165,14 +147,12 @@ demonstrating a fragile ability to turn Form subclasses into displayable
 textual objects. The existing "framework" needs to be elaborated to improve
 and formalise the Form-Field and the Field-Widget interfaces.
 
-Many concepts from the Django forms package are proving to be of
-assistance here, since it has already solved many of the domain's problems.
-The different nature of its client/server interaction model, however, enforces a
-somewhat cumbersome interface which we do not need to suffer in the Textual
-environment. This simplifies more sophisticated interactions such as
-changing the list of available values in a Select widget in response to
-a change in a particular option.
-
-Astute readers will notice there is absolutely no styling on the form
+Astute readers will notice there is limited styling on the form
 components. As a result the proof-of-concept form looks pretty ropey in a
-window of non-optimal size.
+window of non-optimal size. The appearance of `Select`s in particular
+could benefit from some work.
+
+Otherwise, the primary needs are some decent docs and a greater diversity
+of `Field` types to increase the versatility of the library.
+After almost six months, it's now nearly capable of doing the job
+I started writing it to do!

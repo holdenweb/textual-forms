@@ -1,5 +1,4 @@
 from textual_forms.app import build_app
-from textual_forms.form import RenderedForm
 
 import pytest
 import pytest_asyncio
@@ -56,3 +55,10 @@ async def test_validation(app, pilot):
     assert await form.validate()
     form.set_data({"age": 1331})
     assert not await form.validate()
+
+@pytest.mark.asyncio(loop_scope="function")
+async def test_cancel_button(app, pilot):
+
+    form = app.app_form.rform
+    cnx_btn = app.query_one("cancel")
+    pilot.click(cnx_btn)

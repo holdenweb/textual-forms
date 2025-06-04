@@ -1,3 +1,5 @@
+import  wingdbstub
+
 # form.py
 import copy
 
@@ -115,6 +117,7 @@ class Form(BaseForm, metaclass=FormMetaclass):
     class Cancelled(Message):
         def __init__(self, r_form):
             super().__init__()
+            self.form = r_form
 
 
 class RenderedForm(Vertical):
@@ -138,7 +141,8 @@ class RenderedForm(Vertical):
         yield Vertical(
             Horizontal(
                 Button("Cancel", id="cancel"),
-                Button("Submit", id="submit")
+                Button("Submit", id="submit"),
+                id="buttons"
             )
         )
 
@@ -167,9 +171,14 @@ class RenderedForm(Vertical):
         return result
 
     @on(Button.Pressed, "#submit")
-    async def on_button_pressed(self, event: Button.Pressed) -> None:
+    async def submit_pressed(self, event: Button.Pressed) -> None:
         r_form = self.app.query_one("#form-container")
         if await r_form.validate():
             self.post_message(Form.Submitted(self))
         else:
             self.app.notify("Please fix issues before submitting")
+
+    @on(Button.Pressed, "#cancel")
+    async def cancel_pressed(self, event: Button.Pressed) -> None:
+        r_form = self.app.query_one("#form-container")
+        self.post_message(Form.Cancelled(self))

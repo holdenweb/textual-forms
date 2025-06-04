@@ -1,3 +1,4 @@
+import  wingdbstub
 # app.py
 from textual import on
 from textual_forms.validators import EvenInteger, Palindromic
@@ -46,7 +47,7 @@ def build_app(data=None):
             self.notify(f"Form data: valid: {(await form.validate())}, {data}")
 
         @on(Form.Cancelled)
-        def form_cancelled(self, event: Form.Cancelled) -> None:
+        async def form_cancelled(self, event: Form.Cancelled) -> None:
             self.notify("Cancelled")
 
         #def on_click(self, e):

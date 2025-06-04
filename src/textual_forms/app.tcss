@@ -15,7 +15,7 @@ Center {
 RenderedForm {
     keyline: heavy blue;
 }
-Horizontal {
+#buttons {
     height: auto;
     align: center middle;
 }
