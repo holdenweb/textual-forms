@@ -6,6 +6,7 @@ from textual_forms.form import Form
 from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.validation import Number
+from textual.notifications import annotations
 
 class MyForm(Form):
     name = TextField(
@@ -50,9 +51,9 @@ def build_app(data=None):
         async def form_cancelled(self, event: Form.Cancelled) -> None:
             self.notify("Cancelled")
 
-        #def on_click(self, e):
-            #self.log(self.tree)
-            #self.log(self.css_tree)
+        def on_click(self, e):
+            self.log(self.tree)
+            self.log(self.css_tree)
 
     return MyApp()
 

@@ -1,5 +1,4 @@
-from textual_forms.app import build_app
-
+from forms_test_app import build_app
 import pytest
 import pytest_asyncio
 
@@ -21,7 +20,6 @@ async def test_text_field(app, pilot):
         await pilot.press(c)
     assert name_widget.value == "Steve Holden"
 
-
 @pytest.mark.asyncio(loop_scope="function")
 async def test_choice_field(app, pilot):
     choice_widget = app.query_one("#form-isactive")
@@ -29,7 +27,6 @@ async def test_choice_field(app, pilot):
     v = choice_widget.value
     await pilot.press(" ")
     assert choice_widget.value == (not v)
-
 
 @pytest.mark.asyncio(loop_scope="function")
 async def test_integer_field(app, pilot):
@@ -57,8 +54,16 @@ async def test_validation(app, pilot):
     assert not await form.validate()
 
 @pytest.mark.asyncio(loop_scope="function")
-async def test_cancel_button(app, pilot):
-
-    form = app.app_form.rform
-    cnx_btn = app.query_one("cancel")
-    pilot.click(cnx_btn)
+async def test_buttons():
+    app = build_app(
+        data=dict(name="anna", age=32, is_active=True, pill_colour='blue')
+    )
+    async with app.run_test() as pilot:
+        form = app.app_form.rform
+        cnx_btn = form.query_one("#cancel")
+        sbm_btn = form.query_one("#submit")
+        assert app.cancel_count == app.submit_count == 0
+        await pilot.click(cnx_btn)
+        assert app.cancel_count == 1
+        await pilot.click(sbm_btn)
+        assert app.submit_count == 1

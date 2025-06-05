@@ -48,12 +48,10 @@ class MyForm(Form):
         validators=[Number(minimum=0, maximum=130), EvenInteger()],
         id="form-age",
     )
-
     is_active = BooleanField(label="Active?", id="form-isactive")
-
     choice = ChoiceField(
         prompt="Select pill colo(u)r",
-        choices=[("blue", "Option 1"), ("red", "Option 2")],
+        choices=[("blue", "Blue"), ("red", "Red")],
         label="Selection",
         id="form-choice",
     )

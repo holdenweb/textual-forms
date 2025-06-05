@@ -1,5 +1,5 @@
 # widget.py
-from typing import Any, List
+from typing import List
 
 from textual.widgets import Input, Checkbox, Select, Static
 from textual.containers import Center
