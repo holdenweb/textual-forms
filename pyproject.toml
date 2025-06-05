@@ -1,6 +1,6 @@
 [project]
 name = "textual-forms"
-version = "0.5.1"
+version = "0.6.0"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
