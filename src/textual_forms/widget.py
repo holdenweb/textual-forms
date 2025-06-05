@@ -26,7 +26,7 @@ class FieldWidget:
                 container.mount(Center(Static(msg), classes="erm"))
 
 
-class TextWidget(Input, FieldWidget):
+class StringWidget(Input, FieldWidget):
     def __init__(self, field: "Field", **kwargs):  # Forward reference
         super().__init__(select_on_focus=False, **kwargs)
         self.field = field

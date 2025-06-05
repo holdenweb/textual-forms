@@ -3,13 +3,13 @@ import  wingdbstub
 from textual import on
 from textual_forms.validators import EvenInteger, Palindromic
 from textual_forms.form import Form
-from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
+from textual_forms.field import IntegerField, StringField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.validation import Number
 from textual.notifications import annotations
 
 class MyForm(Form):
-    name = TextField(
+    name = StringField(
         placeholder="Name (palindrome)",
         required=True,
         validators=[Palindromic()],

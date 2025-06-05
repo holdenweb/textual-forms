@@ -1,7 +1,7 @@
 # field.py
 from typing import Any, Callable, List, Optional
 
-from .widget import TextWidget, IntegerWidget, BooleanWidget, ChoiceWidget
+from .widget import StringWidget, IntegerWidget, BooleanWidget, ChoiceWidget
 
 class Field:
 
@@ -41,9 +41,9 @@ class Field:
             raise NotImplementedError("Fields with no default widget must implement create_widget()")
 
 
-class TextField(Field):
+class StringField(Field):
     def create_widget(self):
-        return TextWidget(field=self, validators=self.validators, **self.kwargs)
+        return StringWidget(field=self, validators=self.validators, **self.kwargs)
 
 class IntegerField(Field):
     def create_widget(self):

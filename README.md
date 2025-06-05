@@ -36,7 +36,7 @@ contains one of each of the currently-supported field types.
 
 ``` python
 class MyForm(Form):
-    name = TextField(
+    name = StringField(
         placeholder="Name (palindrome)",
         required=True,
         validators=[Palindromic()],

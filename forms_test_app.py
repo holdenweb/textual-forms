@@ -1,6 +1,6 @@
 from textual import on
 from textual_forms.form import RenderedForm, Form
-from textual_forms.field import IntegerField, TextField, ChoiceField, BooleanField
+from textual_forms.field import IntegerField, StringField, ChoiceField, BooleanField
 from textual.app import App, ComposeResult
 from textual.widgets import Button
 from textual.containers import Vertical
@@ -11,7 +11,7 @@ from textual_forms.validators import EvenInteger, Palindromic
 
 class MyForm(Form):
 
-    name = TextField(
+    name = StringField(
         placeholder="Name (palindrome)",
         required=True,
         validators=[Palindromic()],
