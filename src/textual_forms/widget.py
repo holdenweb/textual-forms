@@ -39,16 +39,20 @@ class IntegerWidget(Input, InputWidget):
 
 
 class TextWidget(TextArea, InputWidget):
-    pass
+    def __init__(self, field: "Field", ** kwargs):
+        super().__init__(**kwargs)
+        self.field = field
 
-class BooleanWidget(Checkbox):
+
+class CheckboxWidget(Checkbox):
     def __init__(self, field: "Field", **kwargs): # Forward reference
         super().__init__(**kwargs)
         self.field = field
     def validate(self, value):
         return ValidationResult()
 
-class ChoiceWidget(Select, InputWidget):
+
+class SelectWidget(Select):
     def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field

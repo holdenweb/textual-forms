@@ -1,7 +1,7 @@
 # field.py
 from typing import Any, Callable, List, Optional
 
-from .widget import StringWidget, IntegerWidget, BooleanWidget, ChoiceWidget
+from .widget import StringWidget, IntegerWidget, CheckboxWidget, SelectWidget
 
 class Field:
 
@@ -30,7 +30,7 @@ class Field:
         return self.widget.value
 
     @value.setter
-    def value(self, value):  # Doesn't work for non-strring fields (esp. BooleanWidget)
+    def value(self, value):  # Only works with string-valued widgets
         self.widget.value = str(value)
 
     def to_widget_value(self, value: Any) -> Any:
@@ -62,7 +62,7 @@ class IntegerField(Field):
 
 class BooleanField(Field):
     def create_widget(self):
-        return BooleanWidget(field=self, label=self.label, **self.kwargs)
+        return CheckboxWidget(field=self, label=self.label, **self.kwargs)
 
     def to_python(self, value: bool) -> bool:
         return value
@@ -73,7 +73,7 @@ class BooleanField(Field):
         return self.widget.value
 
     @value.setter
-    def value(self, value):  # Doesn't work for non-string fields (esp. BooleanWidget)
+    def value(self, value):
         self.widget.value = value
 
 class ChoiceField(Field):
@@ -92,7 +92,7 @@ class ChoiceField(Field):
         super().__init__(label, required, validators, help_text, **kwargs)
 
     def create_widget(self):
-        return ChoiceWidget(field=self, choices=self.choices, **self.kwargs)
+        return SelectWidget(field=self, choices=self.choices, **self.kwargs)
 
     def to_python(self, value: str) -> str:
         return value
