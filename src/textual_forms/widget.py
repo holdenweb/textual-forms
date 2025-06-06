@@ -1,7 +1,7 @@
 # widget.py
 from typing import List
 
-from textual.widgets import Input, Checkbox, Select, Static
+from textual.widgets import Input, Checkbox, Select, Static, TextArea
 from textual.containers import Center
 from textual.validation import ValidationResult
 
@@ -14,7 +14,7 @@ def ids():
 ids = ids()
 
 
-class FieldWidget:
+class InputWidget:
     """
     Mixin to provide requirements for forms support.
     """
@@ -26,26 +26,29 @@ class FieldWidget:
                 container.mount(Center(Static(msg), classes="erm"))
 
 
-class StringWidget(Input, FieldWidget):
+class StringWidget(Input, InputWidget):
     def __init__(self, field: "Field", **kwargs):  # Forward reference
         super().__init__(select_on_focus=False, **kwargs)
         self.field = field
 
 
-class IntegerWidget(Input, FieldWidget):
+class IntegerWidget(Input, InputWidget):
     def __init__(self, field: "Field",  **kwargs): # Forward reference
         super().__init__(type='integer', select_on_focus=False, **kwargs)
         self.field = field
 
 
-class BooleanWidget(Checkbox, FieldWidget):
+class TextWidget(TextArea, InputWidget):
+    pass
+
+class BooleanWidget(Checkbox, InputWidget):
     def __init__(self, field: "Field", **kwargs): # Forward reference
         super().__init__(**kwargs)
         self.field = field
     def validate(self, value):
         return ValidationResult()
 
-class ChoiceWidget(Select, FieldWidget):
+class ChoiceWidget(Select, InputWidget):
     def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field
