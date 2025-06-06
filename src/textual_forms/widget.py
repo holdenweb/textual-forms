@@ -41,7 +41,7 @@ class IntegerWidget(Input, InputWidget):
 class TextWidget(TextArea, InputWidget):
     pass
 
-class BooleanWidget(Checkbox, InputWidget):
+class BooleanWidget(Checkbox):
     def __init__(self, field: "Field", **kwargs): # Forward reference
         super().__init__(**kwargs)
         self.field = field
