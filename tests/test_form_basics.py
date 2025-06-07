@@ -13,7 +13,7 @@ async def pilot(app):
         yield p
 
 @pytest.mark.asyncio(loop_scope="function")
-async def test_text_field(app, pilot):
+async def test_string_field(app, pilot):
     name_widget = app.query_one("#form-name")
     name_widget.focus()
     for c in "Steve Holden":
@@ -28,6 +28,7 @@ async def test_choice_field(app, pilot):
     await pilot.press(" ")
     assert choice_widget.value == (not v)
 
+
 @pytest.mark.asyncio(loop_scope="function")
 async def test_integer_field(app, pilot):
     age_widget = app.query_one("#form-age")
@@ -40,10 +41,22 @@ async def test_integer_field(app, pilot):
 
 
 @pytest.mark.asyncio(loop_scope="function")
+async def test_text_field(app, pilot):
+    test_string = "The quick brown fox jumps over the lazy dog"
+    desc_widget = app.query_one("#form-description")
+    desc_widget.clear()
+    desc_widget.focus()
+    for c in test_string:
+        await pilot.press(c)
+    v = desc_widget.value
+    assert v == test_string == desc_widget.field.value
+
+@pytest.mark.asyncio(loop_scope="function")
 async def test_fields_present(app, pilot):
     fields = app.app_form.rform.fields
     # Use a list because ordering should be  maintained
-    assert list(fields) == ["name", "age", "is_active", "choice"]
+    assert list(fields) == ["name", "age", "description", "is_active", "choice"]
+
 
 @pytest.mark.asyncio(loop_scope="function")
 async def test_validation(app, pilot):
@@ -58,11 +71,12 @@ async def test_buttons():
     app = build_app(
         data=dict(name="anna", age=32, is_active=True, pill_colour='blue')
     )
-    async with app.run_test() as pilot:
+    async with app.run_test(size=(80, 30)) as pilot:
+        assert app.cancel_count == app.submit_count == 0
         form = app.app_form.rform
         cnx_btn = form.query_one("#cancel")
+        app.screen.scroll_to_region(form.query_one("#buttons").region)
         sbm_btn = form.query_one("#submit")
-        assert app.cancel_count == app.submit_count == 0
         await pilot.click(cnx_btn)
         assert app.cancel_count == 1
         await pilot.click(sbm_btn)

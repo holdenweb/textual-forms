@@ -1,7 +1,7 @@
 # field.py
 from typing import Any, Callable, List, Optional
 
-from .widget import StringWidget, IntegerWidget, CheckboxWidget, SelectWidget
+from .widget import StringWidget, IntegerWidget, CheckboxWidget, SelectWidget, TextWidget
 
 class Field:
 
@@ -59,6 +59,11 @@ class IntegerField(Field):
     @value.setter
     def value(self, value):
         self.widget.value = str(value)
+
+class TextField(Field):
+    def create_widget(self):
+        return TextWidget(field=self, **self.kwargs)
+
 
 class BooleanField(Field):
     def create_widget(self):

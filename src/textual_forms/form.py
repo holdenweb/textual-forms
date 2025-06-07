@@ -10,6 +10,7 @@ from textual.containers import Vertical, Center, Horizontal
 from textual.widgets import Button, Static
 from textual.message import Message
 
+from textual_forms.validators import EvenInteger, Palindromic
 
 class FormMetaclass(type):
     """Collect Fields declared on the base classes."""
@@ -48,7 +49,7 @@ class BaseForm:
         # Instances should always modify self.fields; they should not modify
         # self._base_fields.
         self.fields = copy.deepcopy(self._base_fields)
-        self.order_fields(self.field_order if field_order is None else field_order)
+        self.order_fields(self.field_order)
         # THIS CHUNK FROM DJANGO ENDS
 
     def _populate_fields(self, field_order: Optional[List[str]] = None):
@@ -83,7 +84,9 @@ class BaseForm:
                 fields[key] = self.fields.pop(key)
             except KeyError:  # ignore unknown fields
                 pass
-        fields.update(self.fields)  # add remaining fields in original order
+        for k in list(self.fields):
+            fields[k] = self.fields.pop(k)
+        assert not self.fields
         self.fields = fields
 
     def render_form(self, id):
@@ -141,7 +144,8 @@ class RenderedForm(Vertical):
                 Button("Cancel", id="cancel"),
                 Button("Submit", id="submit"),
                 id="buttons"
-            )
+            ),
+            id="outer-buttons"
         )
 
     def get_data(self) -> Dict[str, Any]:

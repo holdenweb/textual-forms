@@ -42,6 +42,14 @@ class TextWidget(TextArea, InputWidget):
     def __init__(self, field: "Field", ** kwargs):
         super().__init__(**kwargs)
         self.field = field
+    @property
+    def value(self):
+        return self.text
+    @value.setter
+    def value(self, v):
+        self.text = v
+    def validate(self, value):
+        return ValidationResult()
 
 
 class CheckboxWidget(Checkbox):

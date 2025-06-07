@@ -3,7 +3,7 @@ Vertical {
     width: 1fr;
     height: auto;
 }
-TextInput, IntegerInput {
+StringInput, IntegerInput {
     padding: 0;
 }
 Static {
@@ -11,4 +11,15 @@ Static {
 }
 RenderedForm {
     keyline: heavy blue;
+}
+TextWidget {
+    height: 3;
+}
+#outer-buttons {
+    align: center middle;
+}
+#buttons {
+    height: auto;
+    width: auto;
+    align: center middle;
 }
