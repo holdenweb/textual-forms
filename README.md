@@ -1,25 +1,23 @@
 ## textual_forms
 
-This is the modest beginning of a forms package for textual.
-The intention is to provide a declarative
-framework for data entry and editing that is usable and useful enough to have
-people extend it rather than craft their own.
-
-If you have `uv` installed you can run the demo program without cloning
-the repository with the `uvx` command.
+This is the beginning of a forms package for textual. It provides a
+declarative framework for data entry and editing that is usable and useful
+enough to have people extend it rather than craft their own. With `uv`
+installed you can run the demo program without cloning the repository with
+the `uvx` command.
 
     uvx --from git+https://github.com/holdenweb/textual-forms.git forms-app
 
 This should produce a window that looks something like the one
-below.Terminate the run with CTRL-Q. The program is designed to let you
-experiment. Do feel free to exercise it, tweak it and provide feedback. I'm
-quite happy to receive feedback as issues against the repo, or as email to
+below. Terminate the run with CTRL-Q. The program is designed to let you
+experiment. Please feel free to exercise it, tweak it and provide feedback as
+issues against the repo, on the Textual Discord, or as email to
 steve@holdenweb.com.
 
-![Screenshot of forms.py in action](images/screenshot.gif "textual_forms demo")
+![Screenshot of textual-forms in action](images/screenshot.gif "textual_forms demo")
 
-The inputs are validated on any change, and validation problems are reported
-underneath the field in question. Pressing the Submit button checks that all
+String-based inputs are validated on any change, and validation problems are reported
+underneath the field in question. Pressing the form's Submit button checks that all
 fields are valid, and if so posts a `Form.Submitted` Message; otherwise it
 displays a notification to fix the fields. Pressing Cancel posts a
 `Form.Cancelled` Message. Both Messages provide a reference to the form.
@@ -32,10 +30,16 @@ you've entered as a dictionary, keyed by the field names.
 ![Screenshot of forms result](images/results.gif "textual_forms validation")
 
 Below is the source for the form from the demo program, which
-contains one of each of the currently-supported field types.
+contains an example of each of the currently-supported field types.
 
-``` python
-class MyForm(Form):
+```python
+from textual_forms.field import IntegerField, StringField, ChoiceField, BooleanField, TextField
+from textual_forms.form import Form
+from textual_forms.validators import EvenInteger, Palindromic
+from textual.validation import Number
+
+
+class TestForm(Form):
     name = StringField(
         placeholder="Name (palindrome)",
         required=True,
@@ -48,7 +52,14 @@ class MyForm(Form):
         validators=[Number(minimum=0, maximum=130), EvenInteger()],
         id="form-age",
     )
+    description = TextField(
+        required=True,
+        id="form-description",
+        text="This is a multi-line TextField",
+    )
+
     is_active = BooleanField(label="Active?", id="form-isactive")
+
     choice = ChoiceField(
         prompt="Select pill colo(u)r",
         choices=[("blue", "Blue"), ("red", "Red")],
@@ -59,96 +70,95 @@ class MyForm(Form):
 
 ### Testing
 
-A Makefile exists with a few targets to assist developers.
+The Makefile offers a few targets to assist developers.
 `make test` runs pytest, reporting each test on its own line.
 `make coverage` runs pytest and reports on current test suite coverage.
 
-`make release` prints the latest release number.
+`make release` prints the current release number.
 `make release version=X.Y.Z` creates a new release tagged as `rX.Y.Z` locally.
+New releases must be greater than their precursors.
+
 Still missing is a `publish` target that will push the latest release,
 and the new tag, to GitHub before publishing it on PyPi.
+This last effect may well be most easily achieved via Github actions.
 
 ## Contribute!!
 
-If this project is left to me it will die, because I already know I have
-neither the time nor the energy to support such an effort alone. Some
-interest has, however, already been expressed by various community members
-and so my hope is that this initial stimulus will inspire the `textual` community to help with
+I have neither the time nor the energy to support this effort alone.
+Various community members have been kind enough to offer encouragement,
+and my hope is that this initial stimulus will inspire the `textual` community to help with
 discussions on Discord, suggestions, issues - indeed, any kind of engagement.
 Pull requests are always most valuable, but at this stage discussions,
 suggestions and issues are just as necessary!
 
-The remainder of this document is intended to facilitate and guide design
-discussions on the textual Discord server. I have already identified a number
-of high-priority issues which are [logged in the
-repository](https://github.com/holdenweb/textual-forms/issues).
-Some of the notes are outdated and do not necessarily reflect current thinking - for
-example, a FileField could (except for textual web) simply provide a path to
-local filestore.
+## Current State of Play
 
-Differences between the desktop and textual-web environments will need careful consideration.
-Note that by no means all aspects of the architecture described here are yet implemented,
-and there is rather more to do than currently listed to turn this into
-a library that people will want to use. Hence the need for help.
+I have already identified a number of high-priority issues which are [logged
+in the repository](https://github.com/holdenweb/textual-forms/issues). Some
+of these notes are outdated and do not necessarily reflect current thinking -
+for example, a FileField could (other than for textual-web) simply provide a path
+to local filestore.
 
+Differences between the desktop and textual-web environments will need
+careful consideration. The library is now at the stage where it's a usable
+tool for a limited subclass of data entry and editing tasks.
+
+## Next Steps
+
+1. Document the existing functionality to encourage adoption.
+1. Document the addition of a new field type to encourage extension.
+1. Enhance release process and extend to publishing via PyPI.
+1. Write papers and present talks about Textual and this work.
+1. Get people to use textual-forms!
 
 ### Architecture
 
-The Form class is the basis of forms development; Forms contain one or more
-Fields, each of which is associated with a Widget instance, which may be of
-the Field's default type or passed as an argument to the Field instance.
+The Form class is the basis of the library.
+Forms contain one or more Fields,
+each of which is associated with a Widget instance.
+Each Field type has a default widget type.
+The widdget can also be passed as an argument
+when the Field instance is created.
 
-When a form is created it optionally takes a `data` and a `files` mapping,
-either or both of which may initially be empty. The fields whose names
-appear as keys in the mapping are populated with the associated value.
+When you create a form instance you can optionally provide a `data` mapping.
+The fields whose names are keys in the mapping are populated with the
+associated value.
 
-Field values are validated whenever their widgets lose focus (i.e. a Blur event is
-raised). Each field has an `_errors` private attribute that is initially set
-to None, and after validation contains a list of any ValidationError
-instances generated by validation. The `errors` property, when accessed,
-runs validation if `\_errors` is None (otherwise the field value
-has already been validated), and if the \_errors list is then non-empty
-each validation message is displayed underneath the field.
+Field types based on the Input widget are validated whenever their values
+change. If a validator on a field fails then the validation message is
+displayed underneath the field.
 
-The programmer creates a Form subclass, and within it binds a number of
-Field instances to class variables. The form's render method returns a
-Vertical in which each of the fields' widgets in turn is rendered,
-followed by one or more buttons in a row
-(usually Cancel and Submit, but there should be an API to allow
-modifications).
+Create a Form subclass, and within it bind a number of Field instances to
+class variables. The form's render method returns a Vertical in which each of
+the fields' widgets in turn is rendered, followed by one or more buttons in a
+row (usually Cancel and Submit, but a later API may allow modifications). You
+can, of course, overwrite the Form's `render` method and styling to display
+the widgets in any way you wish.
 
 Setting a field's value inside the program propagates the change to the
-widget's display. The fields value can also be modified through the TUI.
-After any programmatic change the field's validators will be called,
-and any resulting ValidationErrors cause messages to display under the
-field.
+widget's display. A field's value is also modified by changes to the widget
+value from the TUI. After any programmatic change the field's validators will
+be called, and any resulting ValidationErrors cause messages to display under
+the field.
 
-[Because some widgets can be compound (e.g. day, month, year in a date picker)
-the widget accepts values as a dict, and returns them the same way. By
-convention a simple widget uses the `value` key for its value item.
-
--- _I'm not sure this is true at present__ SH --]
-
-When a Form's `render` method is called all fields in the `data`
-and `files` dicts are set to the given
+When a Form's `render` method is called all fields
+whose names appear as keys in the `data` dict are set to the given
 values; fields not included in the data are set to their default values, if
-specified. If any fields are left without a value when one or both of the
-dictionaries are passed a ValueError exception is raised.
+specified. If any fields are left without a value a ValueError exception is raised.
 Otherwise the form components are mounted and become available for user
 interaction.
 
 
 ### Specific refactorings
 
-This package is currently vestigial, with the barest proof-of-concept
-demonstrating a fragile ability to turn Form subclasses into displayable
-textual objects. The existing "framework" needs to be elaborated to improve
+This package is currently in the alpha stage, with the proof-of-concept
+demonstrating a clear ability to turn Form subclasses into interactive
+Textual objects. The existing "framework" needs to be elaborated to improve
 and formalise the Form-Field and the Field-Widget interfaces.
 
-Astute readers will notice there is limited styling on the form
-components. As a result the proof-of-concept form looks pretty ropey in a
-window of non-optimal size. The appearance of `Select`s in particular
-could benefit from some work.
+Astute readers will notice there is limited styling on the form components.
+The proof-of-concept form could be improved in both styling and layout. The
+appearance of `Select`s in particular could benefit from some work.
 
 Otherwise, the primary needs are some decent docs and a greater diversity
 of `Field` types to increase the versatility of the library.
