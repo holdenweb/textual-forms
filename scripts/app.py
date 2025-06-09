@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # app.py
 from textual import on
 from textual_forms.validators import EvenInteger, Palindromic
