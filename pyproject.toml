@@ -17,7 +17,7 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [project.scripts]
-forms-app = "app:main"
+forms-app = "scripts.app:main"
 
 [tool.uv]
 [[tool.uv.index]]
