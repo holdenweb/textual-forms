@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
 # app.py
+#!/usr/bin/env python
+import sys
+from pathlib import Path
+
+# Add package root to Python path
+repo_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(repo_root / "src"))
+
 from textual import on
+
 from textual_forms.validators import EvenInteger, Palindromic
 from textual_forms.form import Form
 from textual.app import App, ComposeResult
