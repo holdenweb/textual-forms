@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [ "mkdocs>=1.6.1", "textual>=3.1.1",]
 [[project.authors]]
-name = "Steve Holdene"
+name = "Steve Holden"
 email = "steve@holdenweb.com"
 
 [dependency-groups]
@@ -17,7 +17,7 @@ requires = [ "hatchling",]
 build-backend = "hatchling.build"
 
 [project.scripts]
-forms-app = "textual_forms.app:main"
+forms-app = "app:main"
 
 [tool.uv]
 [[tool.uv.index]]
