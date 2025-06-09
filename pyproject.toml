@@ -26,8 +26,8 @@ url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
 explicit = true
 
-[tool.uv.run]
-app = "scripts/app.py"  # Explicitly declare runnable scripts
+[[tool.uv.run]]
+]app = "scripts/app.py"  # Explicitly declare runnable scripts
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "session"
