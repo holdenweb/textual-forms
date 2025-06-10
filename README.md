@@ -6,13 +6,14 @@ enough to have people extend it rather than craft their own. With `uv`
 installed you can run the demo program without cloning the repository with
 the `uvx` command.
 
-    uvx --from git+https://github.com/holdenweb/textual-forms.git forms-app
+    uvx --from git+https://github.com/holdenweb/textual-forms.git python scripts/app.py
 
 This should produce a window that looks something like the one
-below. Terminate the run with CTRL-Q. The program is designed to let you
+below. Terminate the run with Ctrl-Q. The program is designed to let you
 experiment. Please feel free to exercise it, tweak it and provide feedback as
 issues against the repo, on the Textual Discord, or as email to
-steve@holdenweb.com.
+steve@holdenweb.com. Actual user experience is the most valuable feedback
+of all!
 
 ![Screenshot of textual-forms in action](images/screenshot.gif "textual_forms demo")
 
