@@ -1,6 +1,6 @@
 [project]
 name = "textual-forms"
-version = "0.7.0"
+version = "0.7.1"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -21,7 +21,6 @@ forms-app = "scripts.app:main"
 
 [tool.uv]
 package = true
-
 [[tool.uv.index]]
 name = "testpypi"
 url = "https://test.pypi.org/simple/"
@@ -29,7 +28,7 @@ publish-url = "https://test.pypi.org/legacy/"
 explicit = true
 
 [tool.uv.run]
-app = "scripts/app.py"  # Explicitly declare runnable scripts
+app = "scripts/app.py"
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "session"
