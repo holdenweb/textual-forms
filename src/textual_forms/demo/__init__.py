@@ -4,7 +4,7 @@ from textual_forms.validators import EvenInteger, Palindromic
 from textual_forms.form import Form
 from textual.app import App, ComposeResult
 from textual.notifications import annotations
-from testform import TestForm
+from textual_forms.demo.testform import TestForm
 
 def build_app(data=None):
 
