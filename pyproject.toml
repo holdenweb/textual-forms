@@ -1,6 +1,6 @@
 [project]
 name = "textual-forms"
-version = "0.7.0"
+version = "0.7.5"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -11,7 +11,7 @@ email = "steve@holdenweb.com"
 
 [dependency-groups]
 dev = [ "pytest>=8.3.5", "pytest-asyncio>=0.26.0", "pytest-cov>=6.1.1", "ruff>=0.11.7", "semver>=3.0.4", "textual-dev>=1.7.0", "toml>=0.10.2",]
-docs = [ "mkdocs>=1.6.1", ]
+docs = [ "mkdocs>=1.6.1",]
 
 [build-system]
 requires = [ "hatchling",]
