@@ -1,3 +1,5 @@
+#import  wingdbstub
+
 # form.py
 import copy
 
@@ -123,6 +125,32 @@ class Form(BaseForm, metaclass=FormMetaclass):
 
 class RenderedForm(Vertical):
 
+    DEFAULT_CSS = """
+    Vertical {
+    margin: 1;
+    width: 1fr;
+    height: auto;
+    }
+    StringInput, IntegerInput {
+        padding: 0;
+    }
+    Static {
+        width: auto;
+    }
+    Center {
+        width: 1fr;
+    }
+    RenderedForm {
+        keyline: heavy blue;
+    }
+    #buttons {
+        height: auto;
+        align: center middle;
+    }
+    TextWidget {
+        height: 4;
+    }
+"""
     def __init__(self, form, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, id=None):
         super().__init__(*form.children, id=id, **form.kwargs)
         self.form = form

@@ -30,5 +30,5 @@ class TestForm(Form):
         choices=[("blue", "Blue"), ("red", "Red")],
         label="Selection",
         id="form-choice",
+        required=True,
     )
-

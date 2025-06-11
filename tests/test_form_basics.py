@@ -1,4 +1,4 @@
-from forms_test_app import build_app
+from textual_forms.demo import build_app
 import pytest
 import pytest_asyncio
 
@@ -69,13 +69,12 @@ async def test_validation(app, pilot):
 @pytest.mark.asyncio(loop_scope="function")
 async def test_buttons():
     app = build_app(
-        data=dict(name="anna", age=32, is_active=True, pill_colour='blue')
+        data=dict(name="anna", age=32, is_active=True, pill_colour='blue', description="Multiline\nfield")
     )
     async with app.run_test(size=(80, 30)) as pilot:
         assert app.cancel_count == app.submit_count == 0
         form = app.app_form.rform
         cnx_btn = form.query_one("#cancel")
-        app.screen.scroll_to_region(form.query_one("#buttons").region)
         sbm_btn = form.query_one("#submit")
         await pilot.click(cnx_btn)
         assert app.cancel_count == 1

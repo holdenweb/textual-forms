@@ -1,4 +1,4 @@
-from forms_test_app import build_app
+from textual_forms.demo import build_app
 import pytest
 import pytest_asyncio
 
