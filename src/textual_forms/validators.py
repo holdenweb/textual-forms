@@ -1,4 +1,5 @@
 from textual.validation import Validator, ValidationResult
+from textual.widgets import Select
 
 class EvenInteger(Validator):
     def validate(self, value: str) -> ValidationResult:
@@ -17,5 +18,3 @@ class Palindromic(Validator):
             return self.success()
         else:
             return self.failure("Not palindromic")
-
-

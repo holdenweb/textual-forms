@@ -3,7 +3,7 @@ from typing import List
 
 from textual.widgets import Input, Checkbox, Select, Static, TextArea
 from textual.containers import Center
-from textual.validation import ValidationResult
+from textual.validation import ValidationResult, Validator
 
 def ids():
     count = 0
@@ -13,6 +13,9 @@ def ids():
 
 ids = ids()
 
+class Succeed(Validator):
+    def validate(self, value):
+        return self.success()
 
 class InputWidget:
     """
@@ -64,5 +67,6 @@ class SelectWidget(Select):
     def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field
+
     def validate(self, value):
-        return ValidationResult()
+        return Succeed().success()

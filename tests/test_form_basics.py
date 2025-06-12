@@ -1,4 +1,7 @@
 from textual_forms.demo import build_app
+from textual_forms.form import Form
+from textual_forms.field import ChoiceField
+
 import pytest
 import pytest_asyncio
 
@@ -56,6 +59,15 @@ async def test_fields_present(app, pilot):
     fields = app.app_form.rform.fields
     # Use a list because ordering should be  maintained
     assert list(fields) == ["name", "age", "description", "is_active", "choice"]
+
+class SelectForm(Form):
+    choice = ChoiceField(
+        prompt="Select pill colo(u)r",
+        choices=[("blue", "Blue"), ("red", "Red")],
+        label="Selection",
+        id="form-choice",
+        required=True,
+    )
 
 
 @pytest.mark.asyncio(loop_scope="function")

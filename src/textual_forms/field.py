@@ -94,10 +94,11 @@ class ChoiceField(Field):
     ):
         self.choices = choices
         self.kwargs = kwargs
+        self.required = required
         super().__init__(label, required, validators, help_text, **kwargs)
 
     def create_widget(self):
-        return SelectWidget(field=self, choices=self.choices, **self.kwargs)
+        return SelectWidget(field=self, choices=self.choices, allow_blank=not self.required, **self.kwargs)
 
     def to_python(self, value: str) -> str:
         return value

@@ -12,8 +12,6 @@ from textual.containers import Vertical, Center, Horizontal
 from textual.widgets import Button, Static
 from textual.message import Message
 
-from textual_forms.validators import EvenInteger, Palindromic
-
 class FormMetaclass(type):
     """Collect Fields declared on the base classes."""
     def __new__(mcs, name, bases, attrs):
@@ -193,7 +191,7 @@ class RenderedForm(Vertical):
             widget = field.widget
             container = widget.parent
             await container.remove_children(".erm")
-            vr = widget.validate(widget.value)
+            vr = field.widget.validate(widget.value)
             if not vr.is_valid:
                 result = False
                 for msg in vr.failure_descriptions:
@@ -202,7 +200,7 @@ class RenderedForm(Vertical):
 
     @on(Button.Pressed, "#submit")
     async def submit_pressed(self, event: Button.Pressed) -> None:
-        r_form = self.app.query_one("#form-container")
+        r_form: RenderedForm = self.app.query_one("#form-container")
         if await r_form.validate():
             self.post_message(Form.Submitted(self))
         else:
@@ -210,5 +208,4 @@ class RenderedForm(Vertical):
 
     @on(Button.Pressed, "#cancel")
     async def cancel_pressed(self, event: Button.Pressed) -> None:
-        r_form = self.app.query_one("#form-container")
         self.post_message(Form.Cancelled(self))
