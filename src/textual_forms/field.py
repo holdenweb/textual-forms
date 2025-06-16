@@ -43,11 +43,11 @@ class Field:
 
 class StringField(Field):
     def create_widget(self):
-        return StringWidget(field=self, validators=self.validators, **self.kwargs)
+        return StringWidget(field=self, valid_empty=not self.required, validators=self.validators, **self.kwargs)
 
 class IntegerField(Field):
     def create_widget(self):
-        return IntegerWidget(field=self, validators=self.validators, **self.kwargs)
+        return IntegerWidget(field=self, valid_empty=not self.required, validators=self.validators, **self.kwargs)
 
     @property
     def value(self) -> Optional[int]:
@@ -74,7 +74,6 @@ class BooleanField(Field):
 
     @property
     def value(self):
-        #return {'True': True, 'False': False}[self.widget.value]
         return self.widget.value
 
     @value.setter

@@ -16,7 +16,7 @@ def build_app(data=None, field_order=None, form=None):
             self.field_order = field_order
 
         def compose(self) -> ComposeResult:
-            yield self.app_form.render_form(id="form-container")
+            yield self.app_form.render(id="form-container")
 
         @on(Form.Submitted)
         async def form_submitted(self, event: Form.Submitted) -> None:

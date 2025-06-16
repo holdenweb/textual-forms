@@ -69,4 +69,7 @@ class SelectWidget(Select):
         self.field = field
 
     def validate(self, value):
-        return Succeed().success()
+        if value != Select.BLANK or not self.required:
+            return Succeed().success()
+        else:
+            return Succeed().failure("A value is required")

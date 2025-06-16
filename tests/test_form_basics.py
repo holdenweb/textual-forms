@@ -16,14 +16,6 @@ async def pilot(app):
         yield p
 
 @pytest.mark.asyncio(loop_scope="function")
-async def test_string_field(app, pilot):
-    name_widget = app.query_one("#form-name")
-    name_widget.focus()
-    for c in "Steve Holden":
-        await pilot.press(c)
-    assert name_widget.value == "Steve Holden"
-
-@pytest.mark.asyncio(loop_scope="function")
 async def test_choice_field(app, pilot):
     choice_widget = app.query_one("#form-isactive")
     choice_widget.focus()

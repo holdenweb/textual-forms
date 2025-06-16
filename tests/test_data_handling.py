@@ -7,8 +7,8 @@ async def test_data_injection():
     app = build_app(data=my_data)
     async with app.run_test(size=(80, 30)) as p:
         await p.click("#submit")
-        form = app.query_one("#form-container")
-        assert form.get_data() == my_data
+        rform = app.query_one("#form-container")
+        assert rform.get_data() == my_data
 
 @pytest.mark.asyncio(loop_scope="function")
 async def test_field_order():
