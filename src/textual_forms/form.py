@@ -37,7 +37,10 @@ class RenderedForm(Vertical):
     width: 1fr;
     height: auto;
     }
-    StringInput, IntegerInput {
+    #form-title {
+        background: red;
+    }
+    ChoiceWidget, StringInput, IntegerInput, #form-title {
         padding: 0;
     }
     Static {
@@ -68,6 +71,8 @@ class RenderedForm(Vertical):
 
 
     def compose(self):
+        if self.form.title is not None:
+            yield Vertical(Center(Static(f"---- {self.form.title} ----")), id="form-title")
         for name, field in self.form.fields.items():
             yield Vertical(field.widget)
             if self.data and name in self.data:
@@ -94,7 +99,7 @@ class RenderedForm(Vertical):
     @on(Button.Pressed, "#submit")
     async def submit_pressed(self, event: Button.Pressed) -> None:
         """
-        When form is submitted, validate it and if successful return post a Submitted message.
+        When form is submitted, validate it and if successful post a Submitted message.
         """
         if await self.validate():
             self.post_message(Form.Submitted(self))
@@ -104,16 +109,25 @@ class RenderedForm(Vertical):
     @on(Button.Pressed, "#cancel")
     async def cancel_pressed(self, event: Button.Pressed) -> None:
         """
-        When form is cancelled rpost a Cancelled message.
+        When form is cancelled qpost a Cancelled message.
         """
         self.post_message(Form.Cancelled(self))
 
 class BaseForm:
 
-    def __init__(self, *children, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, **kwargs):
+
+    def __init__(
+        self,
+        *children,
+        data: Optional[Dict[str, Any]] = None,
+        field_order: Optional[List[str]] = None,
+        title: Optional[str] = None,
+        **kwargs,
+    ):
         self.data = data
         self.children = children
         self.field_order = field_order
+        self.title = title
         self.kwargs = kwargs
         self.fields: Dict[str, Field] = {}
         self._populate_fields(field_order)
