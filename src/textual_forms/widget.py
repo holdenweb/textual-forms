@@ -5,13 +5,13 @@ from textual.widgets import Input, Checkbox, Select, Static, TextArea
 from textual.containers import Center
 from textual.validation import ValidationResult, Validator
 
-def ids():
+def widget_num():
     count = 0
     while True:
         count += 1
         yield f"id-{count}"
 
-ids = ids()
+widget_num = widget_num()
 
 class Succeed(Validator):
     def validate(self, value):
@@ -64,9 +64,10 @@ class CheckboxWidget(Checkbox):
 
 
 class SelectWidget(Select):
-    def __init__(self, field: "Field", choices: List[tuple[str, str]], **kwargs): # Forward reference
+    def __init__(self, field: "Field", choices: List[tuple[str, str]], required: bool = False, **kwargs): # Forward reference
         super().__init__(options=choices, **kwargs)
         self.field = field
+        self.required = required
 
     def validate(self, value):
         if value != Select.BLANK or not self.required:

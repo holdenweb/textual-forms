@@ -6,7 +6,7 @@ from .field import Field
 from typing import Dict, Any, Optional, List
 
 from textual import on
-from textual.containers import Vertical, Center, Horizontal
+from textual.containers import Vertical, Center, Horizontal, VerticalScroll
 from textual.widgets import Button, Static
 from textual.message import Message
 
@@ -29,7 +29,7 @@ class FormMetaclass(type):
 
         return new_class
 
-class RenderedForm(Vertical):
+class RenderedForm(VerticalScroll):
 
     DEFAULT_CSS = """
     Vertical {
@@ -57,7 +57,7 @@ class RenderedForm(Vertical):
         align: center middle;
     }
     TextWidget {
-        height: 4;
+        height: 6;
     }
 """
     def __init__(self, form, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, id=None):
@@ -94,7 +94,7 @@ class RenderedForm(Vertical):
         return self.form.set_data(data)
 
     async def validate(self):
-        return await self.form.validate()
+        return self.form.validate()
 
     @on(Button.Pressed, "#submit")
     async def submit_pressed(self, event: Button.Pressed) -> None:
@@ -204,7 +204,7 @@ class BaseForm:
         self.rform = RenderedForm(self, id=id, data=self.data, field_order=self.field_order)
         return self.rform
 
-    async def validate(self):
+    def validate(self):
         """
         Validate (and update with messages as appropriate) all fields in
         the form.
@@ -213,8 +213,8 @@ class BaseForm:
         for name, field in self.fields.items():
             widget = field.widget
             container = widget.parent
-            await container.remove_children(".erm")
-            vr = field.widget.validate(widget.value)
+            container.remove_children(".erm")
+            vr = widget.validate(widget.value)
             if vr is not None and not vr.is_valid:
                 result = False
                 for msg in vr.failure_descriptions:
