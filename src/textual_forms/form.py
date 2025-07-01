@@ -42,6 +42,7 @@ Vertical {
 #form-title {
     background: red;
     height: 1;
+    margin: 1;
 }
 ChoiceWidget, StringInput, IntegerInput, #form-title {
     padding: 0;
@@ -60,7 +61,6 @@ TextWidget {
     height: 6;
 }
 """
-
 
     def __init__(
         self,

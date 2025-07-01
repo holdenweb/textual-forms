@@ -8,10 +8,11 @@ def build_app(data=None, field_order=None, form=None):
 
     class MyApp(App):
 
+        CSS_PATH = "app.tcss"
         def __init__(self, data=data, field_order=field_order, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self.cancel_count = self.submit_count = 0
-            self.app_form = form if form is not None else TestForm(data=data, field_order=field_order)  # simplifies access for testing and debugging
+            self.app_form = form if form is not None else TestForm(data=data, field_order=field_order, title="Forms Demonstrator")  # simplifies access for testing and debugging
             self.data = data
             self.field_order = field_order
 
@@ -23,7 +24,7 @@ def build_app(data=None, field_order=None, form=None):
             form = event.form
             self.submit_count += 1
             data = form.get_data()
-            self.notify(f"Form data: valid: {(await form.validate())}, {data}")
+            self.notify(f"Form data: {data}")
 
         @on(Form.Cancelled)
         async def form_cancelled(self, event: Form.Cancelled) -> None:
