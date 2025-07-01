@@ -5,7 +5,7 @@ from . import one_field_app
 
 import pytest
 
-@pytest.mark.skip
+#s@pytest.mark.skip
 @pytest.mark.asyncio(loop_scope="function")
 async def test_typed_input():
     field = StringField(id="sf", required=True)
@@ -13,7 +13,6 @@ async def test_typed_input():
     async with app.run_test() as pilot:
         test_field = app.query_one("#sf")
         test_field.focus()
-        assert not app.form.validate()
         for c in "Steve Holden":
             await pilot.press(c)
         assert test_field.value == "Steve Holden"
@@ -28,4 +27,15 @@ async def test_empty_ok():
         test_field.focus()
         assert test_field.value == ""
         assert app.form.validate()
+
+@pytest.mark.asyncio(loop_scope="function")
+async def test_not_empty_ok():
+    field = StringField(id="sf", required=True)
+    app = one_field_app(field)()
+    async with app.run_test() as pilot:
+        test_field = app.query_one("#sf")
+        test_field.focus()
+        assert test_field.value == ""
+        assert not app.form.validate()
+
 

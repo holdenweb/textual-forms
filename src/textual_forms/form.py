@@ -31,36 +31,44 @@ class FormMetaclass(type):
 
 class RenderedForm(VerticalScroll):
 
-    DEFAULT_CSS = """
-    Vertical {
-    margin: 1;
+    DEFAULT_CSS = """\
+RenderedForm {
+    keyline: heavy blue;
+}
+Vertical {
     width: 1fr;
     height: auto;
-    }
-    #form-title {
-        background: red;
-    }
-    ChoiceWidget, StringInput, IntegerInput, #form-title {
-        padding: 0;
-    }
-    Static {
-        width: auto;
-    }
-    Center {
-        width: 1fr;
-    }
-    RenderedForm {
-        keyline: heavy blue;
-    }
-    #buttons {
-        height: auto;
-        align: center middle;
-    }
-    TextWidget {
-        height: 6;
-    }
+}
+#form-title {
+    background: red;
+    height: 1;
+}
+ChoiceWidget, StringInput, IntegerInput, #form-title {
+    padding: 0;
+}
+Static {
+    width: auto;
+}
+Center {
+    width: 1fr;
+}
+#buttons {
+    height: auto;
+    align: center middle;
+}
+TextWidget {
+    height: 6;
+}
 """
-    def __init__(self, form, data: Optional[Dict[str, Any]] = None, field_order: Optional[List[str]] = None, id=None):
+
+
+    def __init__(
+        self,
+        form,
+        data: Optional[Dict[str, Any]] = None,
+        field_order: Optional[List[str]] = None,
+        id=None,
+    ):
         super().__init__(*form.children, id=id, **form.kwargs)
         self.form = form
         self.fields = form.fields
@@ -72,7 +80,9 @@ class RenderedForm(VerticalScroll):
 
     def compose(self):
         if self.form.title is not None:
-            yield Vertical(Center(Static(f"---- {self.form.title} ----")), id="form-title")
+            yield Vertical(
+                Center(Static(f"---- {self.form.title} ----")), id="form-title"
+            )
         for name, field in self.form.fields.items():
             yield Vertical(field.widget)
             if self.data and name in self.data:
@@ -115,13 +125,13 @@ class RenderedForm(VerticalScroll):
 
 class BaseForm:
 
-
     def __init__(
         self,
         *children,
         data: Optional[Dict[str, Any]] = None,
         field_order: Optional[List[str]] = None,
         title: Optional[str] = None,
+        render_type=RenderedForm,
         **kwargs,
     ):
         self.data = data
@@ -130,6 +140,7 @@ class BaseForm:
         self.title = title
         self.kwargs = kwargs
         self.fields: Dict[str, Field] = {}
+        self.render_type = render_type
         self._populate_fields(field_order)
 
         # THIS CHUNK FROM DJANGO
@@ -190,6 +201,7 @@ class BaseForm:
         assert not self.fields
         self.fields = fields
 
+
     def render(self, id) -> RenderedForm:
         """
         Return a Vertical subclass with all the widgets inside it. The
@@ -201,7 +213,7 @@ class BaseForm:
         """
         for name, field in self.fields.items():
             field.widget = field.create_widget()
-        self.rform = RenderedForm(self, id=id, data=self.data, field_order=self.field_order)
+        self.rform = self.render_type(self, id=id, data=self.data, field_order=self.field_order)
         return self.rform
 
     def validate(self):

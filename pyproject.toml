@@ -4,7 +4,9 @@ version = "0.7.7"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [ "textual>=3.1.1",]
+dependencies = [
+    "textual",
+]
 [[project.authors]]
 name = "Steve Holden"
 email = "steve@holdenweb.com"
@@ -26,6 +28,9 @@ name = "testpypi"
 url = "https://test.pypi.org/simple/"
 publish-url = "https://test.pypi.org/legacy/"
 explicit = true
+
+[tool.uv.sources]
+textual = { path = "../textual", editable = true }
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "session"
