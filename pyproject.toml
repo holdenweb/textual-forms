@@ -4,7 +4,9 @@ version = "0.7.8"
 description = "A prototype forms package for textual"
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [ "textual",]
+dependencies = [
+    "textual>=3.5.0",
+]
 [[project.authors]]
 name = "Steve Holden"
 email = "steve@holdenweb.com"
@@ -29,10 +31,6 @@ explicit = true
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "session"
-
-[tool.uv.sources.textual]
-path = "../textual"
-editable = true
 
 [tool.hatch.build.targets.sdist]
 only-include = [ "src/textual_forms",]
