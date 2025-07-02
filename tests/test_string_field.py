@@ -28,6 +28,7 @@ async def test_empty_ok():
         assert test_field.value == ""
         assert app.form.validate()
 
+@pytest.mark.skip  # Skip until https://github.com/Textualize/textual/issues/5917 fixed
 @pytest.mark.asyncio(loop_scope="function")
 async def test_not_empty_ok():
     field = StringField(id="sf", required=True)

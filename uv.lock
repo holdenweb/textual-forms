@@ -1177,6 +1177,7 @@ name = "textual-forms"
 version = "0.7.8"
 source = { editable = "." }
 dependencies = [
+    { name = "pytest-asyncio" },
     { name = "textual" },
 ]
 
@@ -1195,7 +1196,10 @@ docs = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "textual", specifier = ">=3.5.0" }]
+requires-dist = [
+    { name = "pytest-asyncio", specifier = ">=1.0.0" },
+    { name = "textual", specifier = ">=3.5.0" },
+]
 
 [package.metadata.requires-dev]
 dev = [
